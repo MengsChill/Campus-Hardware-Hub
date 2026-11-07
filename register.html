@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account – Campus Hardware Hub</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="auth-page">
+
+  <!-- Background Decoration -->
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="auth-wrapper">
+
+    <!-- Left Panel -->
+    <div class="auth-left">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+        </div>
+        <h1 class="brand-name">Campus<br><span>Hardware Hub</span></h1>
+      </div>
+      <div class="left-tagline">
+        <h2>Join the Hub.<br>Get equipped.</h2>
+        <p>Create your free account and start borrowing campus hardware and tools for your projects today.</p>
+      </div>
+      <div class="feature-list">
+        <div class="feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Free for all students & staff</span>
+        </div>
+        <div class="feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Instant access after approval</span>
+        </div>
+        <div class="feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Secure & campus-verified accounts</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel – Register Form -->
+    <div class="auth-right">
+      <div class="auth-card">
+
+        <div class="auth-header">
+          <h2>Create Account</h2>
+          <p>Fill in your details to register for Campus Hardware Hub</p>
+        </div>
+
+        <!-- Role Tabs -->
+        <div class="role-tabs" id="roleTabs">
+          <button class="role-tab active" data-role="student" onclick="switchRole(this)">
+            <i class="fa-solid fa-graduation-cap"></i> Student
+          </button>
+          <button class="role-tab" data-role="staff" onclick="switchRole(this)">
+            <i class="fa-solid fa-briefcase"></i> Staff
+          </button>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+          <div class="step active" id="step-dot-1">
+            <div class="step-dot">1</div>
+            <div class="step-label">Personal</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step" id="step-dot-2">
+            <div class="step-dot">2</div>
+            <div class="step-label">Campus Info</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step" id="step-dot-3">
+            <div class="step-dot">3</div>
+            <div class="step-label">Security</div>
+          </div>
+        </div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)" novalidate>
+
+          <!-- STEP 1: Personal Info -->
+          <div class="form-step active" id="formStep1">
+
+            <div class="form-group">
+              <label for="fullName">Full Name</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user input-icon"></i>
+                <input type="text" id="fullName" placeholder="e.g. Ahmad Ridhwan" required />
+              </div>
+              <span class="error-msg" id="fullNameErr"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-envelope input-icon"></i>
+                <input type="email" id="email" placeholder="e.g. ahmad@university.edu.my" required />
+              </div>
+              <span class="error-msg" id="emailErr"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-phone input-icon"></i>
+                <input type="tel" id="phone" placeholder="e.g. 011-12345678" required />
+              </div>
+              <span class="error-msg" id="phoneErr"></span>
+            </div>
+
+            <button type="button" class="btn-primary btn-full" onclick="nextStep(2)">
+              Continue <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+          </div>
+
+          <!-- STEP 2: Campus Info -->
+          <div class="form-step" id="formStep2">
+
+            <div class="form-group">
+              <label for="userId">
+                <span id="regIdLabel">Student ID</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-id-card input-icon"></i>
+                <input type="text" id="regUserId" placeholder="e.g. S12345678" required />
+              </div>
+              <span class="error-msg" id="regUserIdErr"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="department" id="deptLabel">Course / Programme</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-building-columns input-icon"></i>
+                <select id="department" required>
+                  <option value="" disabled selected>Select your course / department</option>
+                  <!-- Student courses -->
+                  <optgroup label="School of Engineering" id="engGroup">
+                    <option value="civil">Civil Engineering</option>
+                    <option value="electrical">Electrical Engineering</option>
+                    <option value="mechanical">Mechanical Engineering</option>
+                    <option value="computer">Computer Engineering</option>
+                    <option value="electronic">Electronics Engineering</option>
+                  </optgroup>
+                  <optgroup label="School of Computing" id="csGroup">
+                    <option value="cs">Computer Science</option>
+                    <option value="it">Information Technology</option>
+                    <option value="se">Software Engineering</option>
+                    <option value="ds">Data Science</option>
+                    <option value="cyber">Cybersecurity</option>
+                  </optgroup>
+                  <optgroup label="School of Design">
+                    <option value="id">Industrial Design</option>
+                    <option value="arch">Architecture</option>
+                  </optgroup>
+                </select>
+              </div>
+              <span class="error-msg" id="departmentErr"></span>
+            </div>
+
+            <div class="form-row-2col">
+              <button type="button" class="btn-secondary btn-full" onclick="prevStep(1)">
+                <i class="fa-solid fa-arrow-left"></i> Back
+              </button>
+              <button type="button" class="btn-primary btn-full" onclick="nextStep(3)">
+                Continue <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- STEP 3: Security -->
+          <div class="form-step" id="formStep3">
+
+            <div class="form-group">
+              <label for="newPassword">Create Password</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock input-icon"></i>
+                <input type="password" id="newPassword" placeholder="Minimum 8 characters" required oninput="checkStrength(this.value)" />
+                <button type="button" class="toggle-pw" onclick="togglePassword('newPassword', this)" tabindex="-1">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+              <!-- Strength bar -->
+              <div class="strength-bar-wrap" id="strengthWrap" style="display:none;">
+                <div class="strength-bar">
+                  <div class="strength-fill" id="strengthFill"></div>
+                </div>
+                <span class="strength-label" id="strengthLabel">Weak</span>
+              </div>
+              <span class="error-msg" id="newPasswordErr"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock input-icon"></i>
+                <input type="password" id="confirmPassword" placeholder="Re-enter your password" required />
+                <button type="button" class="toggle-pw" onclick="togglePassword('confirmPassword', this)" tabindex="-1">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+              </div>
+              <span class="error-msg" id="confirmPasswordErr"></span>
+            </div>
+
+            <!-- Password Requirements Checklist -->
+            <div class="pw-requirements">
+              <div class="req-item" id="req-len"><i class="fa-solid fa-circle-xmark"></i> At least 8 characters</div>
+              <div class="req-item" id="req-upper"><i class="fa-solid fa-circle-xmark"></i> One uppercase letter</div>
+              <div class="req-item" id="req-num"><i class="fa-solid fa-circle-xmark"></i> One number</div>
+              <div class="req-item" id="req-special"><i class="fa-solid fa-circle-xmark"></i> One special character (!@#$...)</div>
+            </div>
+
+            <!-- Terms -->
+            <label class="checkbox-label terms-label">
+              <input type="checkbox" id="agreeTerms" />
+              <span class="checkmark"></span>
+              I agree to the <a href="#" onclick="return false;">Terms of Use</a> and <a href="#" onclick="return false;">Privacy Policy</a>
+            </label>
+            <span class="error-msg" id="termsErr"></span>
+
+            <div class="form-row-2col">
+              <button type="button" class="btn-secondary btn-full" onclick="prevStep(2)">
+                <i class="fa-solid fa-arrow-left"></i> Back
+              </button>
+              <button type="submit" class="btn-primary btn-full" id="registerBtn">
+                <span class="btn-text">Create Account</span>
+                <i class="fa-solid fa-user-check btn-icon"></i>
+              </button>
+            </div>
+
+          </div>
+
+        </form>
+
+        <div class="auth-divider"><span>Already have an account?</span></div>
+        <a href="login.html" class="btn-secondary btn-full">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In Instead
+        </a>
+
+      </div>
+
+      <p class="auth-footer-note">
+        &copy; 2026 Campus Hardware Hub &nbsp;|&nbsp; Internal Use Only
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-card success-modal">
+      <div class="success-animation">
+        <div class="success-circle">
+          <i class="fa-solid fa-check"></i>
+        </div>
+      </div>
+      <h3>Account Created!</h3>
+      <p>Your account has been submitted for verification. You'll receive a confirmation once approved.</p>
+      <a href="login.html" class="btn-primary btn-full">
+        <i class="fa-solid fa-right-to-bracket"></i> Go to Login
+      </a>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/register.js"></script>
+</body>
+</html>
+

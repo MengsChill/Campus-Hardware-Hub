@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – Campus Hardware Hub</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="auth-page">
+
+  <!-- Background Decoration -->
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="auth-wrapper">
+
+    <!-- Left Panel -->
+    <div class="auth-left">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+        </div>
+        <h1 class="brand-name">Campus<br><span>Hardware Hub</span></h1>
+      </div>
+      <div class="left-tagline">
+        <h2>Borrow smarter,<br>build better.</h2>
+        <p>Your one-stop platform to borrow campus tools and hardware — fast, easy, and tracked.</p>
+      </div>
+      <div class="feature-list">
+        <div class="feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Browse & book tools in seconds</span>
+        </div>
+        <div class="feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Track your lending status live</span>
+        </div>
+        <div class="feature-item">
+          <i class="fa-solid fa-check-circle"></i>
+          <span>Return reminders & history logs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel – Login Form -->
+    <div class="auth-right">
+      <div class="auth-card">
+
+        <div class="auth-header">
+          <h2>Welcome Back</h2>
+          <p>Sign in to your Campus Hardware Hub account</p>
+        </div>
+
+        <!-- Role Tabs -->
+        <div class="role-tabs" id="roleTabs">
+          <button class="role-tab active" data-role="student" onclick="switchRole(this)">
+            <i class="fa-solid fa-graduation-cap"></i> Student
+          </button>
+          <button class="role-tab" data-role="staff" onclick="switchRole(this)">
+            <i class="fa-solid fa-briefcase"></i> Staff
+          </button>
+          <button class="role-tab" data-role="admin" onclick="switchRole(this)">
+            <i class="fa-solid fa-shield-halved"></i> Admin
+          </button>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
+
+          <!-- ID Field -->
+          <div class="form-group">
+            <label for="userId">
+              <span id="idLabel">Student ID</span>
+            </label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-id-card input-icon"></i>
+              <input
+                type="text"
+                id="userId"
+                name="userId"
+                placeholder="e.g. S12345678"
+                autocomplete="off"
+                required
+              />
+            </div>
+            <span class="error-msg" id="userIdErr"></span>
+          </div>
+
+          <!-- Password Field -->
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+              />
+              <button type="button" class="toggle-pw" onclick="togglePassword('password', this)" tabindex="-1">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+            <span class="error-msg" id="passwordErr"></span>
+          </div>
+
+          <!-- Remember + Forgot -->
+          <div class="form-row-inline">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rememberMe" />
+              <span class="checkmark"></span>
+              Remember me
+            </label>
+            <a href="#" class="forgot-link" onclick="showForgotModal()">Forgot password?</a>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn-primary btn-full" id="loginBtn">
+            <span class="btn-text">Sign In</span>
+            <i class="fa-solid fa-arrow-right btn-icon"></i>
+          </button>
+
+          <div class="auth-divider"><span>New here?</span></div>
+
+          <a href="register.html" class="btn-secondary btn-full">
+            <i class="fa-solid fa-user-plus"></i> Create an Account
+          </a>
+
+        </form>
+
+      </div>
+
+      <!-- Footer note -->
+      <p class="auth-footer-note">
+        &copy; 2026 Campus Hardware Hub &nbsp;|&nbsp; Internal Use Only
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal-overlay" id="forgotModal" onclick="closeForgotModal(event)">
+    <div class="modal-card">
+      <button class="modal-close" onclick="hideForgotModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+      <h3>Reset Password</h3>
+      <p>Enter your registered email address. We'll send you a reset link.</p>
+      <div class="form-group">
+        <div class="input-wrapper">
+          <i class="fa-solid fa-envelope input-icon"></i>
+          <input type="email" id="resetEmail" placeholder="your@email.com" />
+        </div>
+        <span class="error-msg" id="resetEmailErr"></span>
+      </div>
+      <button class="btn-primary btn-full" onclick="sendReset()">
+        Send Reset Link <i class="fa-solid fa-paper-plane"></i>
+      </button>
+      <div class="modal-success" id="resetSuccess" style="display:none;">
+        <i class="fa-solid fa-circle-check"></i> Reset link sent! Check your email.
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
+
