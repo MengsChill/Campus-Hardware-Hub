@@ -32,20 +32,6 @@
         <h2>Borrow smarter,<br>build better.</h2>
         <p>Your one-stop platform to borrow campus tools and hardware — fast, easy, and tracked.</p>
       </div>
-      <div class="feature-list">
-        <div class="feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Browse & book tools in seconds</span>
-        </div>
-        <div class="feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Track your lending status live</span>
-        </div>
-        <div class="feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Return reminders & history logs</span>
-        </div>
-      </div>
     </div>
 
     <!-- Right Panel – Login Form -->
@@ -54,41 +40,26 @@
 
         <div class="auth-header">
           <h2>Welcome Back</h2>
-          <p>Sign in to your Campus Hardware Hub account</p>
-        </div>
-
-        <!-- Role Tabs -->
-        <div class="role-tabs" id="roleTabs">
-          <button class="role-tab active" data-role="student" onclick="switchRole(this)">
-            <i class="fa-solid fa-graduation-cap"></i> Student
-          </button>
-          <button class="role-tab" data-role="staff" onclick="switchRole(this)">
-            <i class="fa-solid fa-briefcase"></i> Staff
-          </button>
-          <button class="role-tab" data-role="admin" onclick="switchRole(this)">
-            <i class="fa-solid fa-shield-halved"></i> Admin
-          </button>
+          <p>Sign in with your campus email to continue</p>
         </div>
 
         <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
 
-          <!-- ID Field -->
+          <!-- Email Field -->
           <div class="form-group">
-            <label for="userId">
-              <span id="idLabel">Student ID</span>
-            </label>
+            <label for="userEmail">Email Address</label>
             <div class="input-wrapper">
-              <i class="fa-solid fa-id-card input-icon"></i>
+              <i class="fa-solid fa-envelope input-icon"></i>
               <input
-                type="text"
-                id="userId"
-                name="userId"
-                placeholder="e.g. S12345678"
-                autocomplete="off"
+                type="email"
+                id="userEmail"
+                name="userEmail"
+                placeholder="e.g. yourname@student.tarc.edu.my"
+                autocomplete="email"
                 required
               />
             </div>
-            <span class="error-msg" id="userIdErr"></span>
+            <span class="error-msg" id="userEmailErr"></span>
           </div>
 
           <!-- Password Field -->
@@ -150,11 +121,11 @@
       <button class="modal-close" onclick="hideForgotModal()"><i class="fa-solid fa-xmark"></i></button>
       <div class="modal-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
       <h3>Reset Password</h3>
-      <p>Enter your registered email address. We'll send you a reset link.</p>
+      <p>Enter your registered campus email. We'll send you a reset link.</p>
       <div class="form-group">
         <div class="input-wrapper">
           <i class="fa-solid fa-envelope input-icon"></i>
-          <input type="email" id="resetEmail" placeholder="your@email.com" />
+          <input type="email" id="resetEmail" placeholder="yourname@student.tarc.edu.my" />
         </div>
         <span class="error-msg" id="resetEmailErr"></span>
       </div>
@@ -173,4 +144,3 @@
   <script src="js/auth.js"></script>
 </body>
 </html>
-

@@ -1,30 +1,24 @@
 /* ============================================================
-   Campus Hardware Hub – Auth Shared JS (login.html)
+   Campus Hardware Hub – Auth Shared JS
    ============================================================ */
 
-/* ── Shared Utilities ─────────────────────────────── */
+/* ── Allowed email domains ────────────────────────── */
+const ALLOWED_DOMAINS = ['@student.tarc.edu.my', '@admin.com'];
 
-/**
- * Show a toast notification
- * @param {string} message
- * @param {'default'|'success'|'error'} type
- */
+function isAllowedEmail(email) {
+  return ALLOWED_DOMAINS.some(domain => email.trim().toLowerCase().endsWith(domain));
+}
+
+/* ── Shared Utilities ─────────────────────────────── */
 function showToast(message, type = 'default') {
   const toast = document.getElementById('toast');
   if (!toast) return;
   toast.textContent = message;
   toast.className = 'toast show ' + (type !== 'default' ? type : '');
   clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => {
-    toast.className = 'toast';
-  }, 3200);
+  toast._timer = setTimeout(() => { toast.className = 'toast'; }, 3200);
 }
 
-/**
- * Toggle password visibility
- * @param {string} inputId
- * @param {HTMLElement} btn
- */
 function togglePassword(inputId, btn) {
   const input = document.getElementById(inputId);
   const icon  = btn.querySelector('i');
@@ -38,29 +32,21 @@ function togglePassword(inputId, btn) {
   }
 }
 
-/**
- * Set an error message on a field
- */
 function setError(fieldId, msg) {
   const input = document.getElementById(fieldId);
   const err   = document.getElementById(fieldId + 'Err');
-  if (input) input.classList.add('invalid');
-  if (input) input.classList.remove('valid');
+  if (input) { input.classList.add('invalid'); input.classList.remove('valid'); }
   if (err)   err.textContent = msg;
 }
 
-/**
- * Clear an error on a field
- */
 function clearError(fieldId) {
   const input = document.getElementById(fieldId);
   const err   = document.getElementById(fieldId + 'Err');
-  if (input) input.classList.remove('invalid');
-  if (input) input.classList.add('valid');
+  if (input) { input.classList.remove('invalid'); input.classList.add('valid'); }
   if (err)   err.textContent = '';
 }
 
-/* ── Role Switcher ────────────────────────────────── */
+/* ── Role Switcher (register page only) ───────────── */
 let currentRole = 'student';
 
 function switchRole(btn) {
@@ -68,49 +54,54 @@ function switchRole(btn) {
   btn.classList.add('active');
   currentRole = btn.dataset.role;
 
-  // Update placeholder labels
-  const idLabel    = document.getElementById('idLabel')    || document.getElementById('regIdLabel');
-  const deptLabel  = document.getElementById('deptLabel');
-  const deptSelect = document.getElementById('department');
+  const idLabel   = document.getElementById('regIdLabel');
+  const emailHint = document.getElementById('emailHint');
+  const deptLabel = document.getElementById('deptLabel');
+  const deptSelect= document.getElementById('department');
+  const emailInput= document.getElementById('email');
+  const userInput = document.getElementById('regUserId');
 
   if (idLabel) {
-    idLabel.textContent = currentRole === 'student' ? 'Student ID' :
-                          currentRole === 'staff'   ? 'Staff ID'   : 'Admin ID';
+    idLabel.textContent = currentRole === 'student' ? 'Student ID' : 'Staff ID';
   }
-
-  const userInput  = document.getElementById('userId') || document.getElementById('regUserId');
   if (userInput) {
-    userInput.placeholder = currentRole === 'student' ? 'e.g. S12345678' :
-                            currentRole === 'staff'   ? 'e.g. T98765432' : 'e.g. A00001';
+    userInput.placeholder = currentRole === 'student' ? 'e.g. 21WMR12345' : 'e.g. T98765432';
+  }
+  if (emailHint) {
+    emailHint.textContent = currentRole === 'student' ? '(@student.tarc.edu.my)' : '(@staff.tarc.edu.my)';
+  }
+  if (emailInput) {
+    emailInput.placeholder = currentRole === 'student'
+      ? 'yourname@student.tarc.edu.my'
+      : 'yourname@staff.tarc.edu.my';
   }
 
   // Adjust department dropdown for staff
   if (deptLabel && deptSelect) {
     if (currentRole === 'staff') {
       deptLabel.textContent = 'Department';
-      // Replace optgroups with staff departments
       deptSelect.innerHTML = `
         <option value="" disabled selected>Select your department</option>
-        <option value="lab">Laboratory & Equipment</option>
+        <option value="lab">Laboratory &amp; Equipment</option>
         <option value="eng_dept">Engineering Department</option>
         <option value="cs_dept">Computing Department</option>
-        <option value="maintenance">Facilities & Maintenance</option>
+        <option value="maintenance">Facilities &amp; Maintenance</option>
         <option value="library">Library Services</option>
         <option value="admin_dept">Administration</option>
-        <option value="research">Research & Development</option>
+        <option value="research">Research &amp; Development</option>
       `;
     } else {
       deptLabel.textContent = 'Course / Programme';
       deptSelect.innerHTML = `
         <option value="" disabled selected>Select your course / department</option>
-        <optgroup label="School of Engineering" id="engGroup">
+        <optgroup label="School of Engineering">
           <option value="civil">Civil Engineering</option>
           <option value="electrical">Electrical Engineering</option>
           <option value="mechanical">Mechanical Engineering</option>
           <option value="computer">Computer Engineering</option>
           <option value="electronic">Electronics Engineering</option>
         </optgroup>
-        <optgroup label="School of Computing" id="csGroup">
+        <optgroup label="School of Computing">
           <option value="cs">Computer Science</option>
           <option value="it">Information Technology</option>
           <option value="se">Software Engineering</option>
@@ -131,26 +122,36 @@ function handleLogin(e) {
   e.preventDefault();
   let valid = true;
 
-  const userId   = document.getElementById('userId');
-  const password = document.getElementById('password');
+  const emailInput = document.getElementById('userEmail');
+  const pwInput    = document.getElementById('password');
+  const email      = emailInput ? emailInput.value.trim() : '';
+  const password   = pwInput    ? pwInput.value           : '';
 
   // Clear previous errors
-  clearError('userId');
+  clearError('userEmail');
   clearError('password');
 
-  // Validate ID
-  if (!userId || !userId.value.trim()) {
-    setError('userId', 'Please enter your ID.');
+  // ── Validate Email ──────────────────────────────
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!email) {
+    setError('userEmail', 'Please enter your email address.');
+    valid = false;
+  } else if (!emailRegex.test(email)) {
+    setError('userEmail', 'Please enter a valid email address.');
+    valid = false;
+  } else if (!isAllowedEmail(email)) {
+    setError('userEmail', 'Only @student.tarc.edu.my or @admin.com emails are allowed.');
     valid = false;
   } else {
-    clearError('userId');
+    clearError('userEmail');
   }
 
-  // Validate Password
-  if (!password || !password.value) {
+  // ── Validate Password ───────────────────────────
+  if (!password) {
     setError('password', 'Please enter your password.');
     valid = false;
-  } else if (password.value.length < 6) {
+  } else if (password.length < 6) {
     setError('password', 'Password must be at least 6 characters.');
     valid = false;
   } else {
@@ -159,38 +160,33 @@ function handleLogin(e) {
 
   if (!valid) return;
 
-  // Simulate login
+  // Simulate login with loading state
   const btn = document.getElementById('loginBtn');
-  if (btn) {
-    btn.classList.add('loading');
-    btn.disabled = true;
-  }
+  if (btn) { btn.classList.add('loading'); btn.disabled = true; }
 
   setTimeout(() => {
-    // ---- Replace this block with real auth logic ----
+    // ---- Demo accounts – replace with real auth later ----
     const demoAccounts = [
-      { id: 'S12345678', password: 'Student@1', role: 'student' },
-      { id: 'T98765432', password: 'Staff@123', role: 'staff'   },
-      { id: 'A00001',    password: 'Admin@123', role: 'admin'   },
+      { email: 'ahmad@student.tarc.edu.my', password: 'Student@1' },
+      { email: 'sara@student.tarc.edu.my',  password: 'Student@1' },
+      { email: 'admin@admin.com',            password: 'Admin@123' },
     ];
 
     const match = demoAccounts.find(
-      a => a.id === userId.value.trim() && a.password === password.value && a.role === currentRole
+      a => a.email === email.toLowerCase() && a.password === password
     );
 
     if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
 
     if (match) {
+      const role = email.endsWith('@admin.com') ? 'admin' : 'student';
+      sessionStorage.setItem('chh_user', JSON.stringify({ email, role }));
       showToast('Sign-in successful! Redirecting…', 'success');
-      // Store session info
-      sessionStorage.setItem('chh_user', JSON.stringify({ id: match.id, role: match.role }));
-      // TODO: Redirect to dashboard
-      // setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
     } else {
-      setError('password', 'Invalid credentials. Please check your ID and password.');
-      showToast('Login failed. Please try again.', 'error');
+      setError('password', 'Incorrect email or password. Please try again.');
+      showToast('Login failed. Please check your credentials.', 'error');
     }
-    // ---- End replace block ----
   }, 1200);
 }
 
@@ -229,21 +225,36 @@ function sendReset() {
     email.classList.add('invalid');
     return;
   }
+  if (!isAllowedEmail(email.value.trim())) {
+    err.textContent = 'Only campus email addresses are allowed.';
+    email.classList.add('invalid');
+    return;
+  }
   err.textContent = '';
   email.classList.remove('invalid');
   email.classList.add('valid');
-
-  // Simulate send
   succ.style.display = 'flex';
   showToast('Reset link sent to ' + email.value.trim(), 'success');
 }
 
-/* ── Live validation on input ─────────────────────── */
+/* ── Live validation on login inputs ──────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  const userId   = document.getElementById('userId');
-  const password = document.getElementById('password');
+  const emailInput = document.getElementById('userEmail');
+  const pwInput    = document.getElementById('password');
 
-  if (userId)   userId.addEventListener('input',   () => { if (userId.value.trim())   clearError('userId');   });
-  if (password) password.addEventListener('input', () => { if (password.value.length >= 6) clearError('password'); });
+  if (emailInput) {
+    emailInput.addEventListener('input', () => {
+      const val = emailInput.value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (val && emailRegex.test(val) && isAllowedEmail(val)) {
+        clearError('userEmail');
+      }
+    });
+  }
+
+  if (pwInput) {
+    pwInput.addEventListener('input', () => {
+      if (pwInput.value.length >= 6) clearError('password');
+    });
+  }
 });
-

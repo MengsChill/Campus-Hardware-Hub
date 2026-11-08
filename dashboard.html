@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – Campus Hardware Hub</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="dashboard-page">
+
+  <!-- ── Sidebar ───────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+      <div class="brand-text">
+        <span class="brand-top">Campus</span>
+        <span class="brand-bot">Hardware Hub</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item active">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="catalog.html" class="nav-item">
+        <i class="fa-solid fa-toolbox"></i>
+        <span>Tool Catalog</span>
+      </a>
+      <a href="booking.html" class="nav-item">
+        <i class="fa-solid fa-calendar-plus"></i>
+        <span>New Booking</span>
+        <span class="nav-badge">New</span>
+      </a>
+
+      <div class="nav-section-label">My Account</div>
+      <a href="my-loans.html" class="nav-item">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>My Loans</span>
+        <span class="nav-count" id="activeLoanCount">2</span>
+      </a>
+      <a href="history.html" class="nav-item">
+        <i class="fa-solid fa-rectangle-list"></i>
+        <span>History</span>
+      </a>
+      <a href="notifications.html" class="nav-item">
+        <i class="fa-solid fa-bell"></i>
+        <span>Notifications</span>
+        <span class="nav-count notif-dot" id="notifCount">3</span>
+      </a>
+
+      <!-- Admin-only section (hidden for students) -->
+      <div class="nav-section-label admin-only" id="adminSection">Admin</div>
+      <a href="manage-tools.html" class="nav-item admin-only">
+        <i class="fa-solid fa-wrench"></i>
+        <span>Manage Tools</span>
+      </a>
+      <a href="manage-users.html" class="nav-item admin-only">
+        <i class="fa-solid fa-users"></i>
+        <span>Manage Users</span>
+      </a>
+      <a href="reports.html" class="nav-item admin-only">
+        <i class="fa-solid fa-chart-bar"></i>
+        <span>Reports</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="#" class="nav-item" onclick="confirmLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Log Out</span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ── Sidebar Overlay (mobile) ─────────────────── -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- ── Main Content ──────────────────────────────── -->
+  <div class="main-content" id="mainContent">
+
+    <!-- Top Header -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="breadcrumb">
+          <span>Home</span>
+          <i class="fa-solid fa-chevron-right"></i>
+          <span class="active">Dashboard</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Search -->
+        <div class="topbar-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Search tools…" id="globalSearch" oninput="liveSearch(this.value)" />
+          <div class="search-dropdown" id="searchDropdown"></div>
+        </div>
+
+        <!-- Notifications Bell -->
+        <button class="topbar-icon-btn" onclick="toggleNotifPanel()" aria-label="Notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span class="icon-badge" id="topbarNotifBadge">3</span>
+        </button>
+
+        <!-- User Avatar / Dropdown -->
+        <div class="user-menu" id="userMenu">
+          <button class="user-avatar-btn" onclick="toggleUserMenu()" aria-label="User menu">
+            <div class="avatar" id="userAvatar">A</div>
+            <div class="user-info">
+              <span class="user-name" id="topbarUserName">Ahmad Ridhwan</span>
+              <span class="user-role" id="topbarUserRole">Student</span>
+            </div>
+            <i class="fa-solid fa-chevron-down user-chevron"></i>
+          </button>
+          <div class="user-dropdown" id="userDropdown">
+            <a href="profile.html" class="dropdown-item">
+              <i class="fa-solid fa-user"></i> My Profile
+            </a>
+            <a href="settings.html" class="dropdown-item">
+              <i class="fa-solid fa-gear"></i> Settings
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item danger" onclick="confirmLogout()">
+              <i class="fa-solid fa-right-from-bracket"></i> Log Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <main class="page-body">
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h1>Good evening, <span id="welcomeName">Ahmad</span>! 👋</h1>
+          <p>Here's what's happening with your loans today.</p>
+        </div>
+        <a href="booking.html" class="btn-primary banner-btn">
+          <i class="fa-solid fa-plus"></i> New Booking
+        </a>
+      </div>
+
+      <!-- Stats Cards -->
+      <section class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-icon"><i class="fa-solid fa-toolbox"></i></div>
+          <div class="stat-body">
+            <div class="stat-value" data-target="128" id="stat-tools">0</div>
+            <div class="stat-label">Tools Available</div>
+          </div>
+          <div class="stat-trend up"><i class="fa-solid fa-arrow-trend-up"></i> 12 added</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon"><i class="fa-solid fa-hand-holding"></i></div>
+          <div class="stat-body">
+            <div class="stat-value" data-target="2" id="stat-active">0</div>
+            <div class="stat-label">Active Loans</div>
+          </div>
+          <div class="stat-trend">Due this week</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div class="stat-body">
+            <div class="stat-value" data-target="0" id="stat-overdue">0</div>
+            <div class="stat-label">Overdue Returns</div>
+          </div>
+          <div class="stat-trend good"><i class="fa-solid fa-check"></i> All clear!</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon"><i class="fa-solid fa-rotate-left"></i></div>
+          <div class="stat-body">
+            <div class="stat-value" data-target="7" id="stat-returned">0</div>
+            <div class="stat-label">Returned (Month)</div>
+          </div>
+          <div class="stat-trend up"><i class="fa-solid fa-arrow-trend-up"></i> Good record!</div>
+        </div>
+      </section>
+
+      <!-- Main Grid: Active Loans + Quick Actions -->
+      <section class="dash-grid">
+
+        <!-- Active Loans Table -->
+        <div class="dash-card span-2">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Active Loans</h3>
+            <a href="my-loans.html" class="card-link">View all <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table" id="loansTable">
+              <thead>
+                <tr>
+                  <th>Tool</th>
+                  <th>Loan ID</th>
+                  <th>Borrowed</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="loansTableBody">
+                <!-- Filled by JS -->
+              </tbody>
+            </table>
+            <div class="empty-state" id="loansEmpty" style="display:none;">
+              <i class="fa-solid fa-box-open"></i>
+              <p>No active loans right now.</p>
+              <a href="booking.html" class="btn-primary">Browse Tools</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dash-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-bolt"></i> Quick Actions</h3>
+          </div>
+          <div class="quick-actions">
+            <a href="catalog.html" class="quick-action-btn blue">
+              <div class="qa-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+              <span>Browse Catalog</span>
+            </a>
+            <a href="booking.html" class="quick-action-btn green">
+              <div class="qa-icon"><i class="fa-solid fa-calendar-plus"></i></div>
+              <span>New Booking</span>
+            </a>
+            <a href="my-loans.html" class="quick-action-btn orange">
+              <div class="qa-icon"><i class="fa-solid fa-hand-holding"></i></div>
+              <span>My Loans</span>
+            </a>
+            <a href="history.html" class="quick-action-btn purple">
+              <div class="qa-icon"><i class="fa-solid fa-rectangle-list"></i></div>
+              <span>View History</span>
+            </a>
+          </div>
+
+          <!-- Upcoming Due -->
+          <div class="card-header" style="margin-top:24px; padding-top:20px; border-top:1px solid var(--gray-100);">
+            <h3><i class="fa-solid fa-calendar-xmark"></i> Due Soon</h3>
+          </div>
+          <div class="due-soon-list" id="dueSoonList">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Available Tools Section -->
+      <section class="dash-card" style="margin-top: 0;">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-toolbox"></i> Available Tools</h3>
+          <div class="card-header-right">
+            <div class="filter-tabs" id="catalogFilter">
+              <button class="filter-tab active" data-cat="all" onclick="filterTools(this)">All</button>
+              <button class="filter-tab" data-cat="electrical" onclick="filterTools(this)">Electrical</button>
+              <button class="filter-tab" data-cat="mechanical" onclick="filterTools(this)">Mechanical</button>
+              <button class="filter-tab" data-cat="measuring" onclick="filterTools(this)">Measuring</button>
+              <button class="filter-tab" data-cat="computing" onclick="filterTools(this)">Computing</button>
+            </div>
+            <a href="catalog.html" class="card-link">See all <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+        <div class="tools-grid" id="toolsGrid">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- Bottom Row: Notifications + Recent Activity -->
+      <section class="dash-grid bottom-grid">
+
+        <!-- Notifications -->
+        <div class="dash-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-bell"></i> Notifications</h3>
+            <button class="card-link" onclick="markAllRead()">Mark all read</button>
+          </div>
+          <div class="notif-list" id="notifList">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="dash-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-timeline"></i> Recent Activity</h3>
+          </div>
+          <div class="activity-feed" id="activityFeed">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ── Logout Confirm Modal ───────────────────────── -->
+  <div class="modal-overlay" id="logoutModal">
+    <div class="modal-card" style="max-width:360px; text-align:center;">
+      <div class="modal-icon" style="background:#FEF2F2; color:#EF4444;">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </div>
+      <h3>Log Out?</h3>
+      <p>Are you sure you want to log out of Campus Hardware Hub?</p>
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <button class="btn-secondary btn-full" onclick="closeLogoutModal()">Cancel</button>
+        <button class="btn-primary btn-full" onclick="doLogout()" style="background:linear-gradient(135deg,#DC2626,#B91C1C);box-shadow:0 8px 24px rgba(220,38,38,0.35);">
+          Log Out
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

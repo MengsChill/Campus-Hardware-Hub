@@ -32,20 +32,6 @@
         <h2>Join the Hub.<br>Get equipped.</h2>
         <p>Create your free account and start borrowing campus hardware and tools for your projects today.</p>
       </div>
-      <div class="feature-list">
-        <div class="feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Free for all students & staff</span>
-        </div>
-        <div class="feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Instant access after approval</span>
-        </div>
-        <div class="feature-item">
-          <i class="fa-solid fa-check-circle"></i>
-          <span>Secure & campus-verified accounts</span>
-        </div>
-      </div>
     </div>
 
     <!-- Right Panel – Register Form -->
@@ -100,10 +86,10 @@
             </div>
 
             <div class="form-group">
-              <label for="email">Email Address</label>
+              <label for="email">Email Address <span class="label-hint" id="emailHint">(@student.tarc.edu.my)</span></label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-envelope input-icon"></i>
-                <input type="email" id="email" placeholder="e.g. ahmad@university.edu.my" required />
+                <input type="email" id="email" placeholder="yourname@student.tarc.edu.my" required />
               </div>
               <span class="error-msg" id="emailErr"></span>
             </div>
@@ -127,12 +113,10 @@
           <div class="form-step" id="formStep2">
 
             <div class="form-group">
-              <label for="userId">
-                <span id="regIdLabel">Student ID</span>
-              </label>
+              <label for="regUserId"><span id="regIdLabel">Student ID</span></label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-id-card input-icon"></i>
-                <input type="text" id="regUserId" placeholder="e.g. S12345678" required />
+                <input type="text" id="regUserId" placeholder="e.g. 21WMR12345" required />
               </div>
               <span class="error-msg" id="regUserIdErr"></span>
             </div>
@@ -143,15 +127,14 @@
                 <i class="fa-solid fa-building-columns input-icon"></i>
                 <select id="department" required>
                   <option value="" disabled selected>Select your course / department</option>
-                  <!-- Student courses -->
-                  <optgroup label="School of Engineering" id="engGroup">
+                  <optgroup label="School of Engineering">
                     <option value="civil">Civil Engineering</option>
                     <option value="electrical">Electrical Engineering</option>
                     <option value="mechanical">Mechanical Engineering</option>
                     <option value="computer">Computer Engineering</option>
                     <option value="electronic">Electronics Engineering</option>
                   </optgroup>
-                  <optgroup label="School of Computing" id="csGroup">
+                  <optgroup label="School of Computing">
                     <option value="cs">Computer Science</option>
                     <option value="it">Information Technology</option>
                     <option value="se">Software Engineering</option>
@@ -185,7 +168,13 @@
               <label for="newPassword">Create Password</label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-lock input-icon"></i>
-                <input type="password" id="newPassword" placeholder="Minimum 8 characters" required oninput="checkStrength(this.value)" />
+                <input
+                  type="password"
+                  id="newPassword"
+                  placeholder="Minimum 6 characters"
+                  required
+                  oninput="checkStrength(this.value)"
+                />
                 <button type="button" class="toggle-pw" onclick="togglePassword('newPassword', this)" tabindex="-1">
                   <i class="fa-solid fa-eye"></i>
                 </button>
@@ -200,7 +189,27 @@
               <span class="error-msg" id="newPasswordErr"></span>
             </div>
 
-            <div class="form-group">
+            <!-- Password Requirements Checklist -->
+            <div class="pw-requirements" id="pwRequirements">
+              <div class="req-item" id="req-len">
+                <span class="req-icon"><i class="fa-solid fa-circle-xmark"></i></span>
+                <span>Between 6 and 8 characters</span>
+              </div>
+              <div class="req-item" id="req-upper">
+                <span class="req-icon"><i class="fa-solid fa-circle-xmark"></i></span>
+                <span>At least one uppercase letter (A–Z)</span>
+              </div>
+              <div class="req-item" id="req-num">
+                <span class="req-icon"><i class="fa-solid fa-circle-xmark"></i></span>
+                <span>At least one number (0–9)</span>
+              </div>
+              <div class="req-item" id="req-special">
+                <span class="req-icon"><i class="fa-solid fa-circle-xmark"></i></span>
+                <span>At least one special character (!@#$…)</span>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top:14px;">
               <label for="confirmPassword">Confirm Password</label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-lock input-icon"></i>
@@ -210,14 +219,6 @@
                 </button>
               </div>
               <span class="error-msg" id="confirmPasswordErr"></span>
-            </div>
-
-            <!-- Password Requirements Checklist -->
-            <div class="pw-requirements">
-              <div class="req-item" id="req-len"><i class="fa-solid fa-circle-xmark"></i> At least 8 characters</div>
-              <div class="req-item" id="req-upper"><i class="fa-solid fa-circle-xmark"></i> One uppercase letter</div>
-              <div class="req-item" id="req-num"><i class="fa-solid fa-circle-xmark"></i> One number</div>
-              <div class="req-item" id="req-special"><i class="fa-solid fa-circle-xmark"></i> One special character (!@#$...)</div>
             </div>
 
             <!-- Terms -->
@@ -279,4 +280,3 @@
   <script src="js/register.js"></script>
 </body>
 </html>
-
