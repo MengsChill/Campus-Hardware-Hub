@@ -41,6 +41,17 @@ const App = (() => {
     ],
   };
 
+  // Pages shown as quick-switch tabs in the top header.
+  // Short labels keep the strip on one line; the full name shows on hover.
+  const QUICK = {
+    student: ['dashboard', 'catalog', 'my-loans', 'my-tools', 'requests', 'notifications'],
+    admin:   ['dashboard', 'catalog', 'manage-users', 'manage-tools', 'bookings', 'disputes', 'reports'],
+  };
+  const QUICK_LABEL = {
+    catalog: 'Browse', 'my-loans': 'Bookings', 'my-tools': 'Listings', requests: 'Requests',
+    notifications: 'Alerts', 'manage-users': 'Users', 'manage-tools': 'Listings', bookings: 'Bookings',
+  };
+
   /* ── Formatting helpers ─────────────────────────── */
   const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ESC[ch]);
@@ -739,18 +750,28 @@ const App = (() => {
     document.body.insertBefore(overlay, main);
     document.body.insertBefore(sidebar, overlay);
 
+    const role = user.role === 'admin' ? 'admin' : 'student';
+    const quickTabs = QUICK[role].map(key => {
+      const item = NAV[role].find(n => n.page === key);
+      if (!item) return '';
+      const active = item.page === page;
+      return `<a href="${item.page}.html" class="quick-tab ${active ? 'active' : ''}" ${active ? 'aria-current="page"' : ''} title="${esc(item.label)}">
+                <i class="fa-solid ${item.icon}" aria-hidden="true"></i><span>${QUICK_LABEL[item.page] || item.label}</span>
+                ${item.badge ? `<span class="nav-count" data-badge="${item.badge}" hidden></span>` : ''}
+              </a>`;
+    }).join('');
+
     const topbar = document.createElement('header');
     topbar.className = 'topbar';
     topbar.innerHTML = `
       <div class="topbar-left">
-        <button class="hamburger" data-toggle-sidebar aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+        <button class="hamburger" data-toggle-sidebar aria-label="Open menu" aria-controls="sidebar" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
         <div class="breadcrumb"><span>Home</span><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><span class="active">${esc(title)}</span></div>
       </div>
+      <div class="topbar-center">
+        <nav class="quick-tabs" aria-label="Quick navigation">${quickTabs}</nav>
+      </div>
       <div class="topbar-right">
-        <form class="topbar-search" action="catalog.html" role="search">
-          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-          <input type="search" name="q" placeholder="Search hardware…" aria-label="Search hardware" />
-        </form>
         ${user.role === 'student' ? `<span class="topbar-trust" title="Your Trust Points">${trustBadge(user.trustPoints)}</span>` : ''}
         <a href="notifications.html" class="topbar-icon-btn" aria-label="Notifications">
           <i class="fa-solid fa-bell"></i><span class="icon-badge" data-badge="unread" hidden></span>
@@ -773,6 +794,9 @@ const App = (() => {
         </div>
       </div>`;
     main.insertBefore(topbar, main.firstChild);
+    // Keep the current page's tab visible when the strip has to scroll.
+    const activeTab = topbar.querySelector('.quick-tab.active');
+    if (activeTab) activeTab.scrollIntoView({ inline: 'center', block: 'nearest' });
 
     if (!document.getElementById('toast')) {
       const toast = document.createElement('div');
@@ -783,14 +807,54 @@ const App = (() => {
     }
     if (user.role === 'admin') document.body.classList.add('role-admin');
 
-    const toggleSidebar = () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); };
-    topbar.querySelector('[data-toggle-sidebar]').addEventListener('click', toggleSidebar);
-    overlay.addEventListener('click', toggleSidebar);
+    // Sidebar: hover the menu button to slide it in, click to keep it open
+    // (click again to hide). On small screens the button opens a drawer.
+    const hamburger = topbar.querySelector('[data-toggle-sidebar]');
+    const desktopMQ = window.matchMedia('(min-width: 901px)');
+    const hoverMQ   = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const PIN_KEY   = 'chh_sidebar_pinned';
+    let pinned = localStorage.getItem(PIN_KEY) === '1';
+
+    const syncState = () => {
+      const visible = (pinned && desktopMQ.matches) || sidebar.classList.contains('peek') || sidebar.classList.contains('open');
+      document.body.classList.toggle('sidebar-pinned', pinned);
+      hamburger.setAttribute('aria-expanded', String(visible));
+      hamburger.setAttribute('aria-label', visible ? 'Hide menu' : 'Open menu');
+    };
+    const setPeek   = on => { sidebar.classList.toggle('peek', on); syncState(); };
+    const setDrawer = on => { sidebar.classList.toggle('open', on); overlay.classList.toggle('open', on); syncState(); };
+    const toggleSidebar = () => {
+      if (desktopMQ.matches) {
+        pinned = !pinned;
+        localStorage.setItem(PIN_KEY, pinned ? '1' : '0');
+        sidebar.classList.remove('peek');
+        syncState();
+      } else {
+        setDrawer(!sidebar.classList.contains('open'));
+      }
+    };
+
+    hamburger.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', () => setDrawer(false));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { setPeek(false); setDrawer(false); } });
+    desktopMQ.addEventListener('change', () => { setPeek(false); setDrawer(false); });
+
+    if (hoverMQ.matches) {
+      let closeTimer = null;
+      const cancelClose   = () => { clearTimeout(closeTimer); closeTimer = null; };
+      const scheduleClose = () => { cancelClose(); closeTimer = setTimeout(() => setPeek(false), 220); };
+      hamburger.addEventListener('mouseenter', () => { cancelClose(); if (desktopMQ.matches && !pinned) setPeek(true); });
+      hamburger.addEventListener('mouseleave', scheduleClose);
+      sidebar.addEventListener('mouseenter', cancelClose);
+      sidebar.addEventListener('mouseleave', scheduleClose);
+      sidebar.addEventListener('focusin',  () => { cancelClose(); if (desktopMQ.matches && !pinned) setPeek(true); });
+      sidebar.addEventListener('focusout', e => { if (!sidebar.contains(e.relatedTarget)) scheduleClose(); });
+    }
+    syncState();
     const userMenu = topbar.querySelector('#userMenu');
     topbar.querySelector('[data-toggle-user]').addEventListener('click', e => { e.stopPropagation(); userMenu.classList.toggle('open'); });
     document.addEventListener('click', e => { if (!userMenu.contains(e.target)) userMenu.classList.remove('open'); });
     document.querySelectorAll('[data-logout]').forEach(el => el.addEventListener('click', e => { e.preventDefault(); logout(); }));
-    topbar.querySelector('.topbar-search input').value = new URLSearchParams(location.search).get('q') || '';
   }
 
   // Any element with data-user-id opens that person's profile.
