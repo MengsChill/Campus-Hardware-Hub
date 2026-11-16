@@ -1,5 +1,5 @@
 /* =========================================================
-   Campus Hardware Hub – Dashboard Styles
+   Campus Hardware Lending System – Dashboard Styles
    ========================================================= */
 
 /* ── Layout ───────────────────────────────────────────── */
@@ -814,4 +814,142 @@
 
 @media (max-width: 400px) {
   .stats-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Formal dashboard layout (keeps the existing royal-blue theme) ── */
+.sidebar-brand .brand-bot {
+  font-size: 13px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+.page-body {
+  width: 100%;
+  max-width: 1580px;
+  margin: 0 auto;
+  padding: 30px 32px 36px;
+  gap: 22px;
+}
+.topbar {
+  min-height: 68px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+.breadcrumb .active { color: var(--gray-900); }
+.welcome-banner {
+  border-radius: 16px;
+  padding: 28px 32px;
+  box-shadow: 0 8px 24px rgba(8, 47, 107, 0.18);
+}
+.welcome-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+  color: rgba(255,255,255,0.76);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+}
+.welcome-kicker i { font-size: 11px; }
+.welcome-text h1 {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.35px;
+}
+.welcome-text h1 span { color: white; }
+.welcome-text p { color: rgba(255,255,255,0.82); }
+.dashboard-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+  color: rgba(255,255,255,0.77);
+  font-size: 12px;
+}
+.data-note {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  padding: 3px 8px;
+  border: 1px solid rgba(255,255,255,0.26);
+  border-radius: 999px;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15px;
+}
+.banner-btn {
+  border-radius: 8px;
+  background: white;
+  color: var(--blue-dark);
+}
+.banner-btn:hover {
+  background: var(--blue-pale);
+  color: var(--blue-darker);
+  box-shadow: none;
+}
+.stats-grid { gap: 14px; }
+.stat-card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 8px;
+  min-height: 124px;
+  padding: 19px 18px;
+  border-radius: 14px;
+  border-color: var(--gray-200);
+  box-shadow: 0 2px 8px rgba(15,23,42,0.035);
+}
+.stat-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.stat-card::after { width: 3px; }
+.stat-icon { grid-column: 1; grid-row: 1; }
+.stat-body { grid-column: 2; grid-row: 1; }
+.stat-value { font-size: 29px; font-weight: 700; }
+.stat-label { color: var(--gray-700); font-size: 12px; font-weight: 600; }
+.stat-trend {
+  position: static;
+  grid-column: 2;
+  grid-row: 2;
+  min-height: 15px;
+  color: var(--gray-500);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.dash-grid { gap: 18px; }
+.dash-card {
+  padding: 21px;
+  border-radius: 14px;
+  border-color: var(--gray-200);
+  box-shadow: 0 2px 8px rgba(15,23,42,0.035);
+}
+.card-header { gap: 12px; }
+.card-header h3 { font-size: 14px; }
+.data-table thead th { color: var(--gray-500); }
+.data-table tbody tr:hover { background: #F8FAFC; }
+.borrower-cell { display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.borrower-avatar {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--blue-pale);
+  color: var(--blue-primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+.quick-action-btn { border-width: 1px; }
+
+@media (max-width: 900px) {
+  .page-body { padding: 24px 22px 30px; }
+}
+@media (max-width: 600px) {
+  .page-body { padding: 16px; gap: 16px; }
+  .welcome-banner { gap: 18px; }
+  .dashboard-meta { flex-wrap: wrap; }
+  .stat-card { min-height: 116px; padding: 16px 14px; }
+  .stat-value { font-size: 26px; }
+  .card-header-right { flex-wrap: wrap; justify-content: flex-end; }
 }

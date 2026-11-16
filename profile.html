@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile – Campus Hardware Lending System</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="dashboard-page" data-page="profile" data-title="My Profile">
+
+  <!-- Sidebar and top bar are added by js/app.js -->
+  <div class="main-content" id="mainContent">
+    <main class="page-body">
+      <div class="page-header">
+        <div>
+          <h1><i class="fa-solid fa-user" aria-hidden="true"></i> My Profile</h1>
+          <p>Your details, Trust Points, reviews and password.</p>
+        </div>
+        <div class="page-actions"></div>
+      </div>
+
+      <div class="profile-grid">
+        <div class="dash-card profile-card">
+          <div id="avatarUpload"></div>
+          <div class="profile-name" id="profileName"></div>
+          <div class="profile-email" id="profileEmail"></div>
+          <div id="profileRole"></div>
+          <p class="field-hint" id="profileSince" style="margin-top:8px;"></p>
+          <div class="profile-stats" id="profileStats"></div>
+          <p class="field-hint" style="margin-top:14px;">Your photo and Trust Points are shown to students you rent from or lend to.</p>
+        </div>
+
+        <div class="stack">
+          <form class="dash-card" id="profileForm" novalidate>
+            <div class="card-header"><h3><i class="fa-solid fa-id-card"></i> Personal details</h3></div>
+            <div class="form-grid">
+              <div class="form-group span-2">
+                <label for="pName">Full name</label>
+                <input id="pName" class="form-control" maxlength="80" autocomplete="name" />
+                <span class="error-msg" id="pNameErr"></span>
+              </div>
+              <div class="form-group">
+                <label for="pEmail">Email <span class="muted">(cannot be changed)</span></label>
+                <input id="pEmail" class="form-control" readonly />
+              </div>
+              <div class="form-group">
+                <label for="pCampusId">Campus ID</label>
+                <input id="pCampusId" class="form-control" readonly />
+              </div>
+              <div class="form-group">
+                <label for="pPhone">Phone number</label>
+                <input id="pPhone" class="form-control" type="tel" autocomplete="tel" />
+                <span class="error-msg" id="pPhoneErr"></span>
+              </div>
+              <div class="form-group">
+                <label for="pWhatsapp">WhatsApp number <button type="button" class="link-btn inline" id="sameAsPhone">Same as phone</button></label>
+                <input id="pWhatsapp" class="form-control" type="tel" />
+                <span class="error-msg" id="pWhatsappErr"></span>
+              </div>
+              <div class="form-group span-2">
+                <label for="pDepartment">Programme</label>
+                <select id="pDepartment" class="form-control"></select>
+                <span class="error-msg" id="pDepartmentErr"></span>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary"><span class="btn-text">Save Changes</span> <i class="fa-solid fa-check btn-icon"></i></button>
+          </form>
+
+          <section class="dash-card" id="trustPanel"></section>
+
+          <form class="dash-card" id="passwordForm" novalidate>
+            <div class="card-header"><h3><i class="fa-solid fa-lock"></i> Change password</h3></div>
+            <div class="form-group">
+              <label for="currentPassword">Current password</label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+                <input type="password" id="currentPassword" autocomplete="current-password" />
+                <button type="button" class="toggle-pw" onclick="togglePassword('currentPassword', this)" aria-label="Show password"><i class="fa-solid fa-eye"></i></button>
+              </div>
+              <span class="error-msg" id="currentPasswordErr"></span>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="newPassword">New password</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-key input-icon" aria-hidden="true"></i>
+                  <input type="password" id="newPassword" autocomplete="new-password" maxlength="128" />
+                  <button type="button" class="toggle-pw" onclick="togglePassword('newPassword', this)" aria-label="Show password"><i class="fa-solid fa-eye"></i></button>
+                </div>
+                <div class="strength-bar-wrap" id="strengthWrap" hidden>
+                  <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                  <span class="strength-label" id="strengthLabel"></span>
+                </div>
+                <span class="caps-warning" data-for="newPassword" hidden><i class="fa-solid fa-triangle-exclamation"></i> Caps Lock is on</span>
+                <span class="error-msg" id="newPasswordErr"></span>
+              </div>
+              <div class="form-group">
+                <label for="confirmNewPassword">Confirm new password</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-key input-icon" aria-hidden="true"></i>
+                  <input type="password" id="confirmNewPassword" autocomplete="new-password" maxlength="128" />
+                </div>
+                <span class="error-msg" id="confirmNewPasswordErr"></span>
+              </div>
+            </div>
+            <ul class="pw-requirements two-col" id="pwRequirements"></ul>
+            <button type="submit" class="btn-primary"><span class="btn-text">Update Password</span> <i class="fa-solid fa-shield-halved btn-icon"></i></button>
+          </form>
+
+          <section class="dash-card danger-zone">
+            <div class="card-header"><h3><i class="fa-solid fa-user-slash"></i> Deactivate account</h3></div>
+            <p style="font-size:13px;color:var(--gray-500);margin-bottom:12px;">You can deactivate your account when you have no bookings in progress and no unresolved disputes. Your listings will be removed.</p>
+            <button type="button" class="btn-secondary" id="deactivateBtn" style="color:#DC2626;"><i class="fa-solid fa-user-slash"></i> Deactivate my account</button>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/password-rules.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/pages/profile.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login – Campus Hardware Hub</title>
+  <title>Sign In – Campus Hardware Lending System</title>
   <link rel="stylesheet" href="css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -11,7 +11,7 @@
 <body class="auth-page">
 
   <!-- Background Decoration -->
-  <div class="bg-shapes">
+  <div class="bg-shapes" aria-hidden="true">
     <div class="shape shape-1"></div>
     <div class="shape shape-2"></div>
     <div class="shape shape-3"></div>
@@ -21,126 +21,196 @@
   <div class="auth-wrapper">
 
     <!-- Left Panel -->
-    <div class="auth-left">
+    <aside class="auth-left">
       <div class="brand">
         <div class="brand-icon">
-          <i class="fa-solid fa-screwdriver-wrench"></i>
+          <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i>
         </div>
-        <h1 class="brand-name">Campus<br><span>Hardware Hub</span></h1>
+        <h1 class="brand-name">Campus<br><span>Hardware Lending System</span></h1>
       </div>
       <div class="left-tagline">
         <h2>Borrow smarter,<br>build better.</h2>
         <p>Your one-stop platform to borrow campus tools and hardware — fast, easy, and tracked.</p>
       </div>
-    </div>
+      <ul class="feature-list">
+        <li class="feature-item"><i class="fa-solid fa-toolbox" aria-hidden="true"></i> Browse and reserve lab equipment online</li>
+        <li class="feature-item"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Track due dates and loan history</li>
+        <li class="feature-item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Secure sign-in with your campus account</li>
+      </ul>
+    </aside>
 
     <!-- Right Panel – Login Form -->
-    <div class="auth-right">
+    <main class="auth-right">
       <div class="auth-card">
 
         <div class="auth-header">
-          <h2>Welcome Back</h2>
+          <h2>Welcome back</h2>
           <p>Sign in with your campus email to continue</p>
         </div>
+
+        <div class="form-alert" id="loginAlert" role="alert" hidden></div>
 
         <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
 
           <!-- Email Field -->
           <div class="form-group">
-            <label for="userEmail">Email Address</label>
+            <label for="userEmail">Email address</label>
             <div class="input-wrapper">
-              <i class="fa-solid fa-envelope input-icon"></i>
+              <i class="fa-solid fa-envelope input-icon" aria-hidden="true"></i>
               <input
                 type="email"
                 id="userEmail"
-                name="userEmail"
-                placeholder="e.g. yourname@student.tarc.edu.my"
-                autocomplete="email"
+                name="email"
+                placeholder="yourname@student.tarc.edu.my"
+                autocomplete="username"
+                aria-describedby="userEmailErr"
                 required
               />
             </div>
-            <span class="error-msg" id="userEmailErr"></span>
+            <span class="error-msg" id="userEmailErr" aria-live="polite"></span>
           </div>
 
           <!-- Password Field -->
           <div class="form-group">
-            <label for="password">Password</label>
+            <div class="label-row">
+              <label for="password">Password</label>
+              <a href="#" class="forgot-link" onclick="showForgotModal(); return false;">Forgot password?</a>
+            </div>
             <div class="input-wrapper">
-              <i class="fa-solid fa-lock input-icon"></i>
+              <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
               <input
                 type="password"
                 id="password"
                 name="password"
                 placeholder="Enter your password"
+                autocomplete="current-password"
+                aria-describedby="passwordErr"
                 required
               />
-              <button type="button" class="toggle-pw" onclick="togglePassword('password', this)" tabindex="-1">
-                <i class="fa-solid fa-eye"></i>
+              <button type="button" class="toggle-pw" onclick="togglePassword('password', this)" aria-label="Show password">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>
               </button>
             </div>
-            <span class="error-msg" id="passwordErr"></span>
+            <span class="caps-warning" data-for="password" hidden><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Caps Lock is on</span>
+            <span class="error-msg" id="passwordErr" aria-live="polite"></span>
           </div>
 
-          <!-- Remember + Forgot -->
+          <!-- Remember -->
           <div class="form-row-inline">
             <label class="checkbox-label">
               <input type="checkbox" id="rememberMe" />
               <span class="checkmark"></span>
-              Remember me
+              Keep me signed in for 30 days
             </label>
-            <a href="#" class="forgot-link" onclick="showForgotModal()">Forgot password?</a>
           </div>
 
           <!-- Submit -->
           <button type="submit" class="btn-primary btn-full" id="loginBtn">
             <span class="btn-text">Sign In</span>
-            <i class="fa-solid fa-arrow-right btn-icon"></i>
+            <i class="fa-solid fa-arrow-right btn-icon" aria-hidden="true"></i>
           </button>
 
-          <div class="auth-divider"><span>New here?</span></div>
+          <div class="auth-divider"><span>New to the system?</span></div>
 
           <a href="register.html" class="btn-secondary btn-full">
-            <i class="fa-solid fa-user-plus"></i> Create an Account
+            <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Create an Account
           </a>
 
         </form>
+
+        <p class="secure-note"><i class="fa-solid fa-lock" aria-hidden="true"></i> Protected by encrypted passwords and automatic lockout after 5 failed attempts.</p>
 
       </div>
 
       <!-- Footer note -->
       <p class="auth-footer-note">
-        &copy; 2026 Campus Hardware Hub &nbsp;|&nbsp; Internal Use Only
+        &copy; 2026 Campus Hardware Lending System &nbsp;|&nbsp; Internal Use Only
       </p>
-    </div>
+    </main>
 
   </div>
 
   <!-- Forgot Password Modal -->
   <div class="modal-overlay" id="forgotModal" onclick="closeForgotModal(event)">
-    <div class="modal-card">
-      <button class="modal-close" onclick="hideForgotModal()"><i class="fa-solid fa-xmark"></i></button>
-      <div class="modal-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
-      <h3>Reset Password</h3>
-      <p>Enter your registered campus email. We'll send you a reset link.</p>
-      <div class="form-group">
-        <div class="input-wrapper">
-          <i class="fa-solid fa-envelope input-icon"></i>
-          <input type="email" id="resetEmail" placeholder="yourname@student.tarc.edu.my" />
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
+      <button class="modal-close" onclick="hideForgotModal()" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+
+      <!-- Step 1: request code -->
+      <div class="reset-step active" id="resetStep1">
+        <div class="modal-icon"><i class="fa-solid fa-key" aria-hidden="true"></i></div>
+        <h3 id="forgotTitle">Reset your password</h3>
+        <p>Enter your campus email and we'll send you a 6-digit code to reset your password.</p>
+        <form onsubmit="requestResetCode(event)" novalidate>
+          <div class="form-group">
+            <label for="resetEmail" class="sr-only">Email address</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-envelope input-icon" aria-hidden="true"></i>
+              <input type="email" id="resetEmail" placeholder="yourname@student.tarc.edu.my" autocomplete="email" />
+            </div>
+            <span class="error-msg" id="resetEmailErr" aria-live="polite"></span>
+          </div>
+          <button type="submit" class="btn-primary btn-full" id="resetRequestBtn">
+            <span class="btn-text">Send Reset Code</span> <i class="fa-solid fa-paper-plane btn-icon" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Step 2: enter code + new password -->
+      <div class="reset-step" id="resetStep2">
+        <div class="modal-icon"><i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i></div>
+        <h3>Check your email</h3>
+        <p id="resetSentText">Enter the 6-digit code and choose a new password.</p>
+        <div class="dev-code" id="devCodeBox" hidden>
+          <i class="fa-solid fa-flask" aria-hidden="true"></i>
+          <span>Demo mode (no email service): your code is <strong id="devCode"></strong></span>
         </div>
-        <span class="error-msg" id="resetEmailErr"></span>
+        <form onsubmit="submitNewPassword(event)" novalidate>
+          <div class="form-group">
+            <label for="resetCode">Reset code</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-hashtag input-icon" aria-hidden="true"></i>
+              <input type="text" id="resetCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" class="code-input" />
+            </div>
+            <span class="error-msg" id="resetCodeErr" aria-live="polite"></span>
+          </div>
+          <div class="form-group">
+            <label for="resetPassword">New password</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+              <input type="password" id="resetPassword" autocomplete="new-password" placeholder="Create a new password" />
+              <button type="button" class="toggle-pw" onclick="togglePassword('resetPassword', this)" aria-label="Show password">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="strength-bar-wrap" id="resetStrengthWrap" hidden>
+              <div class="strength-bar"><div class="strength-fill" id="resetStrengthFill"></div></div>
+              <span class="strength-label" id="resetStrengthLabel"></span>
+            </div>
+            <span class="error-msg" id="resetPasswordErr" aria-live="polite"></span>
+          </div>
+          <ul class="pw-requirements compact" id="resetRequirements"></ul>
+          <div class="form-group">
+            <label for="resetConfirm">Confirm new password</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+              <input type="password" id="resetConfirm" autocomplete="new-password" placeholder="Re-enter new password" />
+            </div>
+            <span class="error-msg" id="resetConfirmErr" aria-live="polite"></span>
+          </div>
+          <button type="submit" class="btn-primary btn-full" id="resetSubmitBtn">
+            <span class="btn-text">Update Password</span> <i class="fa-solid fa-check btn-icon" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="link-btn" onclick="goToResetStep(1)">Use a different email</button>
+        </form>
       </div>
-      <button class="btn-primary btn-full" onclick="sendReset()">
-        Send Reset Link <i class="fa-solid fa-paper-plane"></i>
-      </button>
-      <div class="modal-success" id="resetSuccess" style="display:none;">
-        <i class="fa-solid fa-circle-check"></i> Reset link sent! Check your email.
-      </div>
+
     </div>
   </div>
 
   <!-- Toast Notification -->
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status"></div>
 
+  <script src="js/password-rules.js"></script>
   <script src="js/auth.js"></script>
 </body>
 </html>

@@ -1,301 +1,220 @@
 /* ============================================================
-   Campus Hardware Hub – Register Page JS
+   Campus Hardware Lending System – Register Page JS
    ============================================================ */
 
-let currentStep = 1;
+let currentRole = 'student';
 
-/* ── Step Navigation ──────────────────────────────── */
-function nextStep(toStep) {
-  if (!validateStep(currentStep)) return;
-  goToStep(toStep);
-}
-function prevStep(toStep) {
-  goToStep(toStep);
-}
-function goToStep(toStep) {
-  document.getElementById('formStep' + currentStep).classList.remove('active');
-  document.getElementById('formStep' + toStep).classList.add('active');
-  updateProgress(toStep);
-  currentStep = toStep;
-}
-function updateProgress(step) {
-  for (let i = 1; i <= 3; i++) {
-    const dot      = document.getElementById('step-dot-' + i);
-    const lineBefore = dot ? dot.previousElementSibling : null;
-    if (!dot) continue;
-    dot.classList.remove('active', 'done');
-    if (i < step)  dot.classList.add('done');
-    if (i === step) dot.classList.add('active');
-    if (lineBefore && lineBefore.classList.contains('step-line')) {
-      i <= step ? lineBefore.classList.add('done') : lineBefore.classList.remove('done');
-    }
-  }
-}
+const STUDENT = {
+  domain: '@student.tarc.edu.my',
+  deptOptions: `
+    <option value="" disabled selected>Select your programme</option>
+    <optgroup label="School of Engineering">
+      <option value="civil">Civil Engineering</option>
+      <option value="electrical">Electrical Engineering</option>
+      <option value="mechanical">Mechanical Engineering</option>
+      <option value="computer">Computer Engineering</option>
+      <option value="electronic">Electronics Engineering</option>
+    </optgroup>
+    <optgroup label="School of Computing">
+      <option value="cs">Computer Science</option>
+      <option value="it">Information Technology</option>
+      <option value="se">Software Engineering</option>
+      <option value="ds">Data Science</option>
+      <option value="cyber">Cybersecurity</option>
+    </optgroup>
+    <optgroup label="School of Design">
+      <option value="id">Industrial Design</option>
+      <option value="arch">Architecture</option>
+    </optgroup>`,
+};
 
-/* ── Validation per Step ──────────────────────────── */
-function validateStep(step) {
-  if (step === 1) return validateStep1();
-  if (step === 2) return validateStep2();
-  if (step === 3) return validateStep3();
-  return true;
-}
-
-function validateStep1() {
-  let valid = true;
-
-  // Full Name
-  const fullName = document.getElementById('fullName');
-  if (!fullName.value.trim() || fullName.value.trim().length < 3) {
-    setError('fullName', 'Please enter your full name (min. 3 characters).');
-    valid = false;
-  } else {
-    clearError('fullName');
-  }
-
-  // Email
-  const email = document.getElementById('email');
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email.value.trim()) {
-    setError('email', 'Email address is required.');
-    valid = false;
-  } else if (!emailRegex.test(email.value.trim())) {
-    setError('email', 'Please enter a valid email address.');
-    valid = false;
-  } else if (currentRole === 'student' && !email.value.trim().toLowerCase().endsWith('@student.tarc.edu.my')) {
-    setError('email', 'Students must use a @student.tarc.edu.my email.');
-    valid = false;
-  } else {
-    clearError('email');
-  }
-
-  // Phone
-  const phone = document.getElementById('phone');
-  const phoneRegex = /^[0-9\-\+\s]{8,15}$/;
-  if (!phone.value.trim()) {
-    setError('phone', 'Phone number is required.');
-    valid = false;
-  } else if (!phoneRegex.test(phone.value.trim())) {
-    setError('phone', 'Please enter a valid phone number (8–15 digits).');
-    valid = false;
-  } else {
-    clearError('phone');
-  }
-
-  return valid;
+/* ── Account type ─────────────────────────────────── */
+function switchRole(btn) {
+  currentRole = btn.dataset.role;
+  document.querySelectorAll('.role-tab').forEach(tab => {
+    tab.classList.toggle('active', tab === btn);
+    tab.setAttribute('aria-selected', tab === btn ? 'true' : 'false');
+  });
+  const isAdmin = currentRole === 'admin';
+  document.getElementById('adminCodeBox').hidden = !isAdmin;
+  document.getElementById('departmentGroup').hidden = isAdmin;
+  document.getElementById('emailLabel').textContent = isAdmin ? 'Work email' : 'University email';
+  document.getElementById('email').placeholder = isAdmin ? 'name@admin.com' : 'yourname' + STUDENT.domain;
+  document.getElementById('campusIdLabel').textContent = isAdmin ? 'Staff ID' : 'Student ID';
+  document.getElementById('campusId').placeholder = isAdmin ? 'e.g. T98765432' : 'e.g. 21WMR12345';
+  document.getElementById('fullName').placeholder = isAdmin ? 'Your full name' : 'As shown on your student card';
+  document.getElementById('registerSubtitle').textContent = isAdmin
+    ? 'Admin accounts need the secret code from the system administrator'
+    : 'Register with your university email to rent and lend hardware';
+  ['email', 'department', 'secretCode'].forEach(id => clearError(id, false));
+  if (isAdmin) document.getElementById('secretCode').focus();
 }
 
-function validateStep2() {
-  let valid = true;
+function isValidMalaysianPhone(value) {
+  const compact = value.trim().replace(/[\s().-]/g, '');
+  if (!/^\+?\d+$/.test(compact)) return false;
 
-  const userId = document.getElementById('regUserId');
-  if (!userId.value.trim() || userId.value.trim().length < 4) {
-    setError('regUserId', 'Please enter a valid ID.');
-    valid = false;
-  } else {
-    clearError('regUserId');
-  }
+  let national = compact;
+  if (compact.startsWith('+60')) national = '0' + compact.slice(3);
+  else if (compact.startsWith('60')) national = '0' + compact.slice(2);
 
-  const dept = document.getElementById('department');
-  if (!dept.value) {
-    setError('department', 'Please select your course or department.');
-    valid = false;
-  } else {
-    clearError('department');
-  }
-
-  return valid;
+  const mobile = /^01(?:[15]\d{8}|[02-46-9]\d{7})$/.test(national);
+  const landline = /^0[3-9]\d{7,8}$/.test(national);
+  return mobile || landline;
 }
 
-function validateStep3() {
-  let valid = true;
+/* ── Field Validation ─────────────────────────────── */
+const getValue = id => document.getElementById(id).value;
 
-  const pw  = document.getElementById('newPassword');
-  const cpw = document.getElementById('confirmPassword');
+const VALIDATORS = {
+  fullName() {
+    const v = getValue('fullName').trim();
+    if (!v) return 'Please enter your full name.';
+    if (v.length < 3) return 'Full name must be at least 3 characters.';
+    if (!/^[\p{L}][\p{L} .'@/-]*$/u.test(v)) return 'Full name can only contain letters, spaces and . \' - / @';
+    return '';
+  },
+  email() {
+    const v = getValue('email').trim().toLowerCase();
+    if (!v) return 'Please enter your email.';
+    if (!EMAIL_REGEX.test(v)) return 'Please enter a valid email address.';
+    if (currentRole === 'student' && !v.endsWith(STUDENT.domain)) return `Students must use their university email (${STUDENT.domain}).`;
+    return '';
+  },
+  phone() {
+    const v = getValue('phone');
+    if (!v.trim()) return 'Please enter your phone number.';
+    if (!isValidMalaysianPhone(v)) return 'Enter a valid Malaysian number, e.g. 011-12345678.';
+    return '';
+  },
+  campusId() {
+    const v = getValue('campusId').trim();
+    if (!v) return `Please enter your ${currentRole === 'admin' ? 'Staff ID' : 'Student ID'}.`;
+    if (!/^[A-Za-z0-9]{4,15}$/.test(v)) return 'ID must be 4–15 letters or numbers, no spaces.';
+    return '';
+  },
+  department() {
+    if (currentRole === 'admin') return '';
+    return getValue('department') ? '' : 'Please select your programme.';
+  },
+  newPassword() {
+    const v = getValue('newPassword');
+    if (!v) return 'Please create a password.';
+    const result = PasswordRules.validate(v, passwordContext());
+    return result.valid ? '' : result.errors[0];
+  },
+  whatsapp() {
+    const v = getValue('whatsapp');
+    if (!v.trim()) return '';                       // optional – defaults to the phone number
+    return isValidMalaysianPhone(v) ? '' : 'Enter a valid WhatsApp number, e.g. 011-12345678.';
+  },
+  secretCode() {
+    if (currentRole !== 'admin') return '';
+    return getValue('secretCode').trim() ? '' : 'Enter the admin secret code.';
+  },
+  confirmPassword() {
+    const v = getValue('confirmPassword');
+    if (!v) return 'Please confirm your password.';
+    if (v !== getValue('newPassword')) return 'Passwords do not match.';
+    return '';
+  },
+  agreeTerms() {
+    return document.getElementById('agreeTerms').checked ? '' : 'You must agree to the Terms of Use to continue.';
+  },
+};
 
-  // Check all password requirements
-  const checks = getPasswordChecks(pw.value);
-
-  if (!pw.value) {
-    setError('newPassword', 'Password is required.');
-    valid = false;
-  } else if (!checks.len) {
-    setError('newPassword', 'Password must be between 6 and 8 characters.');
-    valid = false;
-  } else if (!checks.upper || !checks.num || !checks.special) {
-    setError('newPassword', 'Password does not meet all requirements below.');
-    valid = false;
-  } else {
-    clearError('newPassword');
-  }
-
-  if (!cpw.value) {
-    setError('confirmPassword', 'Please confirm your password.');
-    valid = false;
-  } else if (cpw.value !== pw.value) {
-    setError('confirmPassword', 'Passwords do not match.');
-    valid = false;
-  } else {
-    clearError('confirmPassword');
-  }
-
-  const terms    = document.getElementById('agreeTerms');
-  const termsErr = document.getElementById('termsErr');
-  if (!terms.checked) {
-    if (termsErr) termsErr.textContent = 'You must agree to the Terms of Use to continue.';
-    valid = false;
-  } else {
-    if (termsErr) termsErr.textContent = '';
-  }
-
-  return valid;
+function passwordContext() {
+  return { email: getValue('email').trim(), fullName: getValue('fullName').trim() };
 }
 
-/* ── Password Checks ──────────────────────────────── */
-function getPasswordChecks(val) {
-  return {
-    len:     val.length >= 6 && val.length <= 8,
-    upper:   /[A-Z]/.test(val),
-    num:     /[0-9]/.test(val),
-    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(val),
-  };
+function validateField(id) {
+  const error = VALIDATORS[id]();
+  if (error) setError(id, error);
+  else clearError(id);
+  return !error;
 }
 
-/* ── Password Strength + Live Requirements ────────── */
-function checkStrength(val) {
-  const wrap  = document.getElementById('strengthWrap');
-  const fill  = document.getElementById('strengthFill');
-  const label = document.getElementById('strengthLabel');
-  const checks = getPasswordChecks(val);
-
-  // Update requirement tick boxes
-  updateReq('req-len',     checks.len,     val.length > 0);
-  updateReq('req-upper',   checks.upper,   val.length > 0);
-  updateReq('req-num',     checks.num,     val.length > 0);
-  updateReq('req-special', checks.special, val.length > 0);
-
-  // Hide strength bar when empty
-  if (!val) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'flex';
-
-  const score = Object.values(checks).filter(Boolean).length;
-  const levels = [
-    { pct: '20%',  color: '#EF4444', text: 'Very Weak' },
-    { pct: '45%',  color: '#F97316', text: 'Weak'      },
-    { pct: '65%',  color: '#F59E0B', text: 'Fair'      },
-    { pct: '85%',  color: '#84CC16', text: 'Good'      },
-    { pct: '100%', color: '#22C55E', text: 'Strong'    },
-  ];
-  const lvl = levels[score - 1] || levels[0];
-  fill.style.width      = lvl.pct;
-  fill.style.background = lvl.color;
-  label.textContent     = lvl.text;
-  label.style.color     = lvl.color;
-}
-
-/**
- * Update a single requirement item
- * @param {string}  id      - element id
- * @param {boolean} met     - whether the requirement is satisfied
- * @param {boolean} typing  - whether the user has started typing
- */
-function updateReq(id, met, typing) {
-  const el   = document.getElementById(id);
-  const icon = el ? el.querySelector('.req-icon i') : null;
-  if (!el || !icon) return;
-
-  el.classList.remove('met', 'unmet');
-
-  if (!typing) {
-    // User hasn't typed yet — neutral/gray state
-    icon.className = 'fa-solid fa-circle-xmark';
-    return;
-  }
-
-  if (met) {
-    el.classList.add('met');
-    icon.className = 'fa-solid fa-circle-check';
-  } else {
-    el.classList.add('unmet');
-    icon.className = 'fa-solid fa-circle-xmark';
-  }
+function validateAll() {
+  const invalid = Object.keys(VALIDATORS).filter(id => !validateField(id));
+  if (invalid.length) document.getElementById(invalid[0]).focus();
+  return invalid.length === 0;
 }
 
 /* ── Register Submit ──────────────────────────────── */
-function handleRegister(e) {
+async function handleRegister(e) {
   e.preventDefault();
-  if (!validateStep3()) return;
-
-  const btn = document.getElementById('registerBtn');
-  if (btn) { btn.classList.add('loading'); btn.disabled = true; }
-
-  setTimeout(() => {
-    if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
-
-    const formData = {
-      role:       currentRole,
-      fullName:   document.getElementById('fullName').value.trim(),
-      email:      document.getElementById('email').value.trim(),
-      phone:      document.getElementById('phone').value.trim(),
-      userId:     document.getElementById('regUserId').value.trim(),
-      department: document.getElementById('department').value,
-    };
-    console.log('[CHH] New Account Registration:', formData);
-
-    const modal = document.getElementById('successModal');
-    if (modal) modal.classList.add('open');
-  }, 1500);
-}
-
-/* ── Live Validation on Input ─────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
-  // Full name
-  const fullName = document.getElementById('fullName');
-  if (fullName) fullName.addEventListener('input', () => {
-    if (fullName.value.trim().length >= 3) clearError('fullName');
-  });
-
-  // Email
-  const email = document.getElementById('email');
-  if (email) email.addEventListener('input', () => {
-    const v = email.value.trim();
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) clearError('email');
-  });
-
-  // Phone
-  const phone = document.getElementById('phone');
-  if (phone) phone.addEventListener('input', () => {
-    if (/^[0-9\-\+\s]{8,15}$/.test(phone.value.trim())) clearError('phone');
-  });
-
-  // User ID
-  const uid = document.getElementById('regUserId');
-  if (uid) uid.addEventListener('input', () => {
-    if (uid.value.trim().length >= 4) clearError('regUserId');
-  });
-
-  // Department
-  const dept = document.getElementById('department');
-  if (dept) dept.addEventListener('change', () => {
-    if (dept.value) clearError('department');
-  });
-
-  // Confirm password real-time match
-  const cpw = document.getElementById('confirmPassword');
-  if (cpw) {
-    cpw.addEventListener('input', () => {
-      const pw = document.getElementById('newPassword');
-      if (pw && cpw.value && pw.value === cpw.value) {
-        clearError('confirmPassword');
-      } else if (cpw.value) {
-        setError('confirmPassword', 'Passwords do not match.');
-      }
-    });
+  showAlert('registerAlert', '');
+  if (!validateAll()) {
+    showAlert('registerAlert', 'Please fix the highlighted fields before continuing.', 'error');
+    return;
   }
 
-  // Terms checkbox
-  const terms = document.getElementById('agreeTerms');
-  if (terms) terms.addEventListener('change', () => {
-    const termsErr = document.getElementById('termsErr');
-    if (terms.checked && termsErr) termsErr.textContent = '';
+  const btn = document.getElementById('registerBtn');
+  setLoading(btn, true);
+  try {
+    const { ok, data } = await apiRequest('/api/auth/register', {
+      role:       currentRole,
+      secretCode: currentRole === 'admin' ? getValue('secretCode').trim() : undefined,
+      whatsapp:   getValue('whatsapp').trim(),
+      fullName:   getValue('fullName').trim(),
+      email:      getValue('email').trim().toLowerCase(),
+      phone:      getValue('phone').trim(),
+      campusId:   getValue('campusId').trim(),
+      department: getValue('department'),
+      password:   getValue('newPassword'),
+    });
+
+    if (!ok) {
+      // Map server field names onto the form's input ids.
+      const fieldMap = { password: 'newPassword' };
+      const fields = data.fields || {};
+      Object.entries(fields).forEach(([name, msg]) => setError(fieldMap[name] || name, msg));
+      const first = Object.keys(fields)[0];
+      if (first) document.getElementById(fieldMap[first] || first)?.focus();
+      showAlert('registerAlert', data.error || 'Unable to create your account. Please try again.', 'error');
+      return;
+    }
+
+    ['newPassword', 'confirmPassword'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('successModal').classList.add('open');
+  } catch (error) {
+    showAlert('registerAlert', error.message, 'error');
+  } finally {
+    setLoading(btn, false);
+  }
+}
+
+/* ── Live Validation ──────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('department').innerHTML = STUDENT.deptOptions;
+
+  const refreshPassword = bindPasswordFeedback({
+    input: document.getElementById('newPassword'),
+    list:  document.getElementById('pwRequirements'),
+    wrap:  document.getElementById('strengthWrap'),
+    fill:  document.getElementById('strengthFill'),
+    label: document.getElementById('strengthLabel'),
+  }, passwordContext);
+
+  // Validate on blur; once a field shows an error, re-check it while typing.
+  document.getElementById('sameAsPhone').addEventListener('click', () => {
+    document.getElementById('whatsapp').value = getValue('phone');
+    validateField('whatsapp');
   });
+
+  ['fullName', 'email', 'phone', 'whatsapp', 'campusId', 'newPassword', 'confirmPassword'].forEach(id => {
+    const input = document.getElementById(id);
+    input.addEventListener('blur', () => { if (input.value) validateField(id); });
+    input.addEventListener('input', () => { if (input.classList.contains('invalid')) validateField(id); });
+  });
+
+  // Name/email feed the "doesn't contain personal info" password rule.
+  ['fullName', 'email'].forEach(id => document.getElementById(id).addEventListener('input', refreshPassword));
+
+  document.getElementById('newPassword').addEventListener('input', () => {
+    if (getValue('confirmPassword')) validateField('confirmPassword');
+  });
+  document.getElementById('department').addEventListener('change', () => validateField('department'));
+  document.getElementById('agreeTerms').addEventListener('change', () => validateField('agreeTerms'));
+  document.getElementById('fullName').focus();
 });

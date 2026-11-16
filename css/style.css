@@ -1,5 +1,5 @@
 /* =========================================================
-   Campus Hardware Hub – Auth Styles
+   Campus Hardware Lending System – Auth Styles
    Theme: Royal Blue #1565C0
    ========================================================= */
 
@@ -178,7 +178,7 @@ input, select, textarea { font-family: var(--font); }
   line-height: 1.6;
 }
 
-.feature-list { display: flex; flex-direction: column; gap: 14px; }
+.feature-list { display: flex; flex-direction: column; gap: 14px; list-style: none; position: relative; }
 .feature-item {
   display: flex;
   align-items: center;
@@ -624,6 +624,7 @@ input, select, textarea { font-family: var(--font); }
 
 /* ── Password Requirements ────────────────────────────── */
 .pw-requirements {
+  list-style: none;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -688,7 +689,7 @@ input, select, textarea { font-family: var(--font); }
 
 /* ── Terms Label ──────────────────────────────────────── */
 .terms-label {
-  margin-bottom: 20px;
+  margin-bottom: 2px;
   font-size: 13px;
   color: var(--gray-500);
 }
@@ -711,6 +712,8 @@ input, select, textarea { font-family: var(--font); }
 @keyframes fadeInBg { from{opacity:0} to{opacity:1} }
 
 .modal-card {
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
   background: var(--white);
   border-radius: var(--radius-xl);
   padding: 40px 36px;
@@ -843,3 +846,192 @@ input, select, textarea { font-family: var(--font); }
   .form-row-2col { grid-template-columns: 1fr; }
 }
 
+/* ── Auth: Utilities ──────────────────────────────── */
+[hidden] { display: none !important; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.btn-primary:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.toggle-pw:focus-visible,
+.forgot-link:focus-visible,
+.link-btn:focus-visible,
+.role-tab:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--blue-light);
+  outline-offset: 2px;
+}
+
+/* ── Auth: Wide Card (register) ───────────────────── */
+.auth-card--wide { max-width: 640px; }
+
+/* ── Auth: Form Sections ──────────────────────────── */
+.form-section {
+  border: none;
+  margin: 0 0 6px;
+  padding: 0;
+  min-width: 0;
+}
+.form-section + .form-section {
+  border-top: 1px solid var(--gray-100);
+  padding-top: 18px;
+}
+.form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin-bottom: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--blue-dark);
+}
+.form-section-title i {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue-pale);
+  color: var(--blue-primary);
+  font-size: 11px;
+}
+
+/* ── Auth: Form Alert Banner ──────────────────────── */
+.form-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  margin-bottom: 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  animation: fadeIn 0.25s ease both;
+}
+.form-alert i { margin-top: 3px; flex-shrink: 0; }
+.form-alert.error   { background: var(--danger-pale);  border-color: #FECACA; color: #B91C1C; }
+.form-alert.warning { background: #FFFBEB;             border-color: #FDE68A; color: #92400E; }
+.form-alert.success { background: var(--success-pale); border-color: #BBF7D0; color: #15803D; }
+
+/* ── Auth: Label Row / Caps Lock / Notes ──────────── */
+.label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+.label-row label { margin-bottom: 0 !important; }
+.label-row .forgot-link { font-size: 12px; }
+
+.caps-warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #B45309;
+}
+
+.secure-note {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-100);
+  font-size: 11.5px;
+  color: var(--gray-500);
+  text-align: center;
+}
+.secure-note i { margin-top: 3px; color: var(--blue-primary); }
+
+/* ── Auth: Password Checklist Layouts ─────────────── */
+.pw-requirements.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  margin: 2px 0 18px;
+}
+.pw-requirements.compact {
+  gap: 6px;
+  margin: -6px 0 16px;
+  text-align: left;
+}
+.req-item:not(.met):not(.unmet) .req-icon i { font-size: 5px; }
+
+/* ── Auth: Reset Password Modal ───────────────────── */
+.reset-step { display: none; }
+.reset-step.active { display: block; animation: fadeIn 0.25s ease both; }
+.reset-step form { text-align: left; }
+
+.dev-code {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: -6px 0 18px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: #FFFBEB;
+  border: 1px dashed #F59E0B;
+  font-size: 12px;
+  color: #92400E;
+  text-align: left;
+}
+.dev-code strong {
+  font-size: 15px;
+  letter-spacing: 3px;
+  color: var(--gray-900);
+}
+
+.code-input {
+  letter-spacing: 6px;
+  font-weight: 700;
+  font-size: 16px !important;
+}
+
+.link-btn {
+  display: block;
+  margin: 14px auto 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue-primary);
+}
+.link-btn:hover { color: var(--blue-dark); text-decoration: underline; }
+
+/* ── Auth: Responsive additions ───────────────────── */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .auth-left { flex-basis: 360px; padding: 48px 36px; }
+}
+@media (max-width: 560px) {
+  .auth-card--wide .form-row-2col,
+  .pw-requirements.two-col { grid-template-columns: 1fr; gap: 0 12px; }
+  .pw-requirements.two-col { gap: 8px; }
+}
+.feature-item i { width: 18px; text-align: center; }
+@media (max-width: 700px) {
+  .auth-card { margin-top: 0; }
+}
+
+/* Shared with the register page (which does not load app.css) */
+.field-hint { display: block; margin-top: 4px; font-size: 11.5px; color: var(--gray-500); line-height: 1.45; }
+.link-btn.inline { display: inline; margin: 0 0 0 8px; font-size: 11.5px; font-weight: 600; color: var(--blue-primary); }
+.admin-code { background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: var(--radius-sm); padding: 14px; margin-bottom: 18px; }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Disputes – Campus Hardware Lending System</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="dashboard-page" data-page="disputes" data-title="Disputes">
+
+  <!-- Sidebar and top bar are added by js/app.js -->
+  <div class="main-content" id="mainContent">
+    <main class="page-body">
+      <div class="page-header">
+        <div>
+          <h1><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Disputes</h1>
+          <p>Claims about damaged, lost or unreturned hardware. Deposits stay in escrow until an admin decides.</p>
+        </div>
+        <div class="page-actions"></div>
+      </div>
+
+      <div class="tabs" id="disputeTabs" role="tablist"></div>
+      <div class="loan-list" id="disputeList"></div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/pages/disputes.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Listings – Campus Hardware Lending System</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="dashboard-page" data-page="my-tools" data-title="My Listings">
+
+  <!-- Sidebar and top bar are added by js/app.js -->
+  <div class="main-content" id="mainContent">
+    <main class="page-body">
+      <div class="page-header">
+        <div>
+          <h1><i class="fa-solid fa-toolbox" aria-hidden="true"></i> My Listings</h1>
+          <p>Hardware you rent out to other students. <span id="toolCount"></span></p>
+        </div>
+        <div class="page-actions"><a href="requests.html" class="btn-secondary"><i class="fa-solid fa-inbox"></i> Lending Requests</a><button type="button" class="btn-primary" id="newToolBtn"><i class="fa-solid fa-plus"></i> Add Listing</button></div>
+      </div>
+
+      <div class="notice info">
+        <i class="fa-solid fa-circle-info"></i>
+        <div><strong>How lending works</strong>A student books and pays into escrow → you accept the handover time (or propose another) → at the meetup you type their 4-digit PIN and the rental fee is released to you → after the return you inspect the item and the deposit goes back to them (or file a claim).</div>
+      </div>
+      <div class="loan-list" id="myToolsList"></div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/pages/my-tools.js"></script>
+</body>
+</html>

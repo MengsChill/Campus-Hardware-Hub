@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Hardware – Campus Hardware Lending System</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="dashboard-page" data-page="catalog" data-title="Browse Hardware">
+
+  <!-- Sidebar and top bar are added by js/app.js -->
+  <div class="main-content" id="mainContent">
+    <main class="page-body">
+      <div class="page-header">
+        <div>
+          <h1><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Browse Hardware</h1>
+          <p>Rent tools and hardware from other students. Payments are held in escrow until the handover.</p>
+        </div>
+        <div class="page-actions"><a href="my-tools.html?new=1" class="btn-primary" id="postToolBtn" hidden><i class="fa-solid fa-plus"></i> List Hardware</a></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-search">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input type="search" id="searchInput" class="form-control" placeholder="Search name, specs or lender…" aria-label="Search hardware" />
+        </div>
+        <select id="categoryFilter" class="form-control" aria-label="Category"><option value="">All categories</option></select>
+        <select id="conditionFilter" class="form-control" aria-label="Condition"><option value="">Any condition</option></select>
+        <select id="availabilityFilter" class="form-control" aria-label="Availability">
+          <option value="">Any availability</option><option value="available">Available</option><option value="on_loan">On loan</option><option value="maintenance">Under maintenance</option>
+        </select>
+        <input type="number" id="maxRate" class="form-control" min="0" step="1" placeholder="Max RM/day" aria-label="Maximum daily rate" style="max-width:130px;" />
+        <select id="sortBy" class="form-control" aria-label="Sort by">
+          <option value="newest">Newest first</option><option value="price_asc">Price: low to high</option><option value="price_desc">Price: high to low</option>
+          <option value="rating">Highest rated</option><option value="name">Name A–Z</option>
+        </select>
+        <button type="button" class="btn-sm" id="clearFilters"><i class="fa-solid fa-xmark"></i> Clear</button>
+        <span class="toolbar-count" id="resultCount"></span>
+      </div>
+
+      <div class="tool-grid" id="toolGrid"></div>
+    </main>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/tools-ui.js"></script>
+  <script src="js/pages/catalog.js"></script>
+</body>
+</html>
