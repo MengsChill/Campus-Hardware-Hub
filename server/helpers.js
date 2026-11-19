@@ -13,7 +13,7 @@ const IS_PROD        = process.env.NODE_ENV === 'production';
 const SESSION_COOKIE = 'chh_session';
 const SESSION_HOURS  = 12;
 const REMEMBER_DAYS  = 30;
-const UPLOAD_DIR     = path.join(__dirname, '..', 'uploads');
+const UPLOAD_DIR     = process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads');
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 const CATEGORIES = {

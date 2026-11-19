@@ -8,7 +8,7 @@ const { DatabaseSync } = require('node:sqlite');
 const bcrypt = require('bcryptjs');
 const config = require('./config');
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 const DB_FILE  = path.join(DATA_DIR, 'campus.db');
 const SCHEMA_VERSION = 2;
 const BCRYPT_ROUNDS = 12;
