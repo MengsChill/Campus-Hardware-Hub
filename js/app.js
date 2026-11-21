@@ -99,9 +99,15 @@ const App = (() => {
   const money = sen => `RM ${(Number(sen || 0) / 100).toFixed(2)}`;
 
   /* ── Small UI builders ──────────────────────────── */
+  const CATEGORY_ICON = {
+    electrical: 'fa-plug', mechanical: 'fa-screwdriver-wrench', measuring: 'fa-ruler-combined',
+    computing: 'fa-microchip', others: 'fa-box-open',
+  };
   function toolImage(url, opts = {}) {
     if (url) return `<img src="${esc(url)}" alt="${esc(opts.alt || 'Hardware photo')}" loading="lazy" />`;
-    return `<div class="img-placeholder ${opts.small ? 'sm' : ''}"><i class="fa-regular fa-image" aria-hidden="true"></i><span>No photo uploaded</span></div>`;
+    const icon = CATEGORY_ICON[opts.category];
+    return `<div class="img-placeholder ${opts.small ? 'sm' : ''} ${icon ? 'cat-' + esc(opts.category) : ''}">
+      <i class="${icon ? 'fa-solid ' + icon : 'fa-regular fa-image'}" aria-hidden="true"></i><span>No photo yet</span></div>`;
   }
 
   function avatar(person, size = '') {
@@ -225,6 +231,7 @@ const App = (() => {
         <div class="app-modal-body">${body}</div>
         ${footer ? `<div class="app-modal-footer">${footer}</div>` : ''}
       </div>`;
+    const opener = document.activeElement;
     document.body.appendChild(overlay);
     document.documentElement.style.overflow = 'hidden';
 
@@ -232,14 +239,31 @@ const App = (() => {
       overlay.remove();
       document.removeEventListener('keydown', onKey);
       if (!document.querySelector('.modal-overlay.open')) document.documentElement.style.overflow = '';
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
       onClose?.();
     };
-    const onKey = e => { if (e.key === 'Escape' && overlay === [...document.querySelectorAll('.modal-overlay.open')].pop()) close(); };
+    const onKey = e => {
+      if (overlay !== [...document.querySelectorAll('.modal-overlay.open')].pop()) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'Tab') {   // keep keyboard focus inside the dialog
+        const focusable = [...overlay.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+          .filter(el => el.offsetParent !== null);
+        if (!focusable.length) return;
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    };
     document.addEventListener('keydown', onKey);
     overlay.addEventListener('mousedown', e => { if (e.target === overlay) close(); });
     overlay.querySelector('.modal-close').addEventListener('click', close);
     overlay.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', close));
-    setTimeout(() => overlay.querySelector('input:not([type=hidden]):not([type=file]):not([type=radio]), textarea, select')?.focus(), 50);
+    // On touch screens focusing an input would pop up the keyboard and scroll past the content.
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      setTimeout(() => overlay.querySelector('input:not([type=hidden]):not([type=file]):not([type=radio]), textarea, select')?.focus(), 50);
+    } else {
+      overlay.querySelector('.modal-close')?.focus({ preventScroll: true });
+    }
 
     return { el: overlay, body: overlay.querySelector('.app-modal-body'), close };
   }
@@ -424,8 +448,8 @@ const App = (() => {
   }
 
   /** Photo gallery with thumbnails (read-only). */
-  function gallery(photos, alt) {
-    if (!photos.length) return `<div class="detail-media">${toolImage(null)}</div>`;
+  function gallery(photos, alt, category) {
+    if (!photos.length) return `<div class="detail-media">${toolImage(null, { category })}</div>`;
     return `
       <div class="gallery">
         <div class="detail-media"><img src="${esc(photos[0].url)}" alt="${esc(alt)}" data-gallery-main /></div>
@@ -639,7 +663,7 @@ const App = (() => {
         ${stageTracker(loan)}
         <div class="detail-layout" style="margin-top:18px;">
           <div>
-            <div class="detail-media">${toolImage(loan.tool.image, { alt: loan.tool.name })}</div>
+            <div class="detail-media">${toolImage(loan.tool.image, { alt: loan.tool.name, category: loan.tool.category })}</div>
             <h4 class="section-title">Cost & escrow</h4>
             ${costTable(loan)}
             ${loan.transactions.length ? `<h4 class="section-title">Payment ledger</h4>
@@ -857,6 +881,24 @@ const App = (() => {
     document.querySelectorAll('[data-logout]').forEach(el => el.addEventListener('click', e => { e.preventDefault(); logout(); }));
   }
 
+  /** Give each table cell its column name so phones can show rows as labelled cards. */
+  function labelTables(root = document) {
+    root.querySelectorAll('.data-table').forEach(table => {
+      const headers = [...table.querySelectorAll('thead th')].map(th => th.textContent.trim());
+      table.querySelectorAll('tbody tr').forEach(tr => {
+        [...tr.children].forEach((td, i) => {
+          if (!td.hasAttribute('colspan') && headers[i] !== undefined && td.dataset.label !== headers[i]) td.dataset.label = headers[i];
+        });
+      });
+    });
+  }
+  let labelQueued = false;
+  new MutationObserver(() => {
+    if (labelQueued) return;
+    labelQueued = true;
+    requestAnimationFrame(() => { labelQueued = false; labelTables(); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+
   // Any element with data-user-id opens that person's profile.
   document.addEventListener('click', e => {
     const el = e.target.closest('[data-user-id]');
@@ -905,7 +947,33 @@ const App = (() => {
     currentUser = user;
     renderShell(user);
     refreshCounts();
+    // Keep the badges current while the tab is open.
+    setInterval(() => { if (!document.hidden) refreshCounts(); }, 30000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshCounts(); });
+    showDemoStrip();
     return user;
+  }
+
+  /** On the public demo deployment, remind people that data resets. */
+  async function showDemoStrip() {
+    try {
+      if (sessionStorage.getItem('chh_demo_strip_closed')) return;
+    } catch { /* storage unavailable */ }
+    try {
+      const { ok, data } = await apiRequest('/api/auth/config');
+      if (!ok || !data.demo) return;
+    } catch { return; }
+    const strip = document.createElement('div');
+    strip.className = 'demo-strip';
+    strip.setAttribute('role', 'note');
+    strip.innerHTML = `<i class="fa-solid fa-flask" aria-hidden="true"></i>
+      <span>Demo site – data resets from time to time.</span>
+      <button type="button" aria-label="Dismiss"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>`;
+    strip.querySelector('button').addEventListener('click', () => {
+      strip.remove();
+      try { sessionStorage.setItem('chh_demo_strip_closed', '1'); } catch { /* ignore */ }
+    });
+    document.querySelector('.page-body')?.prepend(strip);
   }
 
   function ready(fn) {

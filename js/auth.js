@@ -227,6 +227,38 @@ async function handleLogin(e) {
   }
 }
 
+/* ── Demo deployment & password-reset availability ── */
+async function loadSignInConfig() {
+  let config;
+  try {
+    const { ok, data } = await apiRequest('/api/auth/config');
+    if (!ok) return;
+    config = data;
+  } catch { return; }
+
+  if (!config.passwordReset) document.getElementById('forgotLink').hidden = true;
+  if (!config.demo) return;
+  document.getElementById('demoNotice').hidden = false;
+  if (!config.demoAccounts.length) return;
+
+  const list = document.getElementById('demoAccountList');
+  config.demoAccounts.forEach(account => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'demo-account-btn';
+    btn.innerHTML = '<span></span><small></small>';
+    btn.querySelector('span').textContent = account.label;
+    btn.querySelector('small').textContent = account.role === 'admin' ? 'Administrator' : 'Student';
+    btn.addEventListener('click', () => {
+      document.getElementById('userEmail').value = account.email;
+      document.getElementById('password').value = account.password;
+      document.getElementById('loginForm').requestSubmit();
+    });
+    list.appendChild(btn);
+  });
+  document.getElementById('demoAccounts').hidden = false;
+}
+
 /* ── FORGOT PASSWORD MODAL ────────────────────────── */
 let resetEmailValue = '';
 
@@ -381,6 +413,8 @@ document.addEventListener('DOMContentLoaded', () => {
   resetCode?.addEventListener('input', () => {
     resetCode.value = resetCode.value.replace(/\D/g, '').slice(0, 6);
   });
+
+  loadSignInConfig();
 
   // Session expired / logged out notices passed from other pages
   const params = new URLSearchParams(window.location.search);

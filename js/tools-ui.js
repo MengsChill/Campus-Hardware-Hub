@@ -8,7 +8,7 @@ function toolTile(tool) {
   return `
     <button type="button" class="tool-tile" data-tool-id="${tool.id}" aria-label="View ${esc(tool.name)}">
       <div class="tool-media">
-        ${App.toolImage(tool.image, { alt: tool.name })}
+        ${App.toolImage(tool.image, { alt: tool.name, category: tool.category })}
         ${App.availabilityBadge(tool)}
         ${tool.isMine ? '<span class="mine-tag">Your listing</span>' : ''}
       </div>
@@ -110,7 +110,7 @@ async function openToolDetail(toolId, { onChange } = {}) {
   m.body.innerHTML = `
     <div class="detail-layout">
       <div>
-        ${App.gallery(tool.photos, tool.name)}
+        ${App.gallery(tool.photos, tool.name, tool.category)}
         <h4 class="section-title">Reviews of this item ${App.stars(tool.rating.average, { count: tool.rating.count, size: 'sm' })}</h4>
         <div id="toolReviews">${App.reviewList(tool.reviews, 'No reviews for this item yet.')}</div>
       </div>

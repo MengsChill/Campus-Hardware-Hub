@@ -62,7 +62,7 @@ App.ready(async () => {
 
   document.getElementById('overdueBody').innerHTML = data.overdue.length ? data.overdue.map(l => `
     <tr data-loan-id="${l.id}">
-      <td><div class="tool-cell"><div class="thumb">${App.toolImage(l.tool.image, { small: true })}</div><div class="cell-stack"><span class="tool-name">${esc(l.tool.name)}</span><small>${esc(l.ref)}</small></div></div></td>
+      <td><div class="tool-cell"><div class="thumb">${App.toolImage(l.tool.image, { small: true, category: l.tool.category })}</div><div class="cell-stack"><span class="tool-name">${esc(l.tool.name)}</span><small>${esc(l.ref)}</small></div></div></td>
       <td><span class="link" data-user-id="${l.borrower.id}">${esc(l.borrower.name)}</span><div class="muted">${esc(l.borrower.phone || '')}</div></td>
       <td>${esc(l.owner.name)}</td>
       <td class="date-cell"><strong>${App.fmtDate(l.endDate)}</strong></td>

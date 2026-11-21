@@ -189,8 +189,14 @@ router.get('/', requireAuth, (req, res) => {
     .map(row => serializeTool(row, req.user));
 
   if (['available', 'on_loan', 'maintenance'].includes(req.query.availability)) tools = tools.filter(t => t.availability === req.query.availability);
-  if (req.query.limit) tools = tools.slice(0, Math.max(1, Number(req.query.limit) || 0));
-  res.json({ tools });
+  // Optional paging: ?limit=24&offset=48. `total` counts every match.
+  const total = tools.length;
+  if (req.query.limit) {
+    const limit  = Math.min(100, Math.max(1, Number(req.query.limit) || 0));
+    const offset = Math.max(0, Number(req.query.offset) || 0);
+    tools = tools.slice(offset, offset + limit);
+  }
+  res.json({ tools, total });
 });
 
 /* ── Read: detail ─────────────────────────────────── */

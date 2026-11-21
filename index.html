@@ -2,14 +2,103 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=login.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Campus Hardware Lending System</title>
-  <script>
-    window.location.replace("login.html");
-  </script>
+  <meta name="description" content="Rent hardware and tools from fellow students. Payments are held in escrow and every handover is verified with a PIN." />
+  <meta name="theme-color" content="#1565C0" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="css/landing.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
-  <p>Redirecting to <a href="login.html">Login</a>...</p>
+
+  <div class="demo-bar" id="demoBar" hidden>
+    <i class="fa-solid fa-flask" aria-hidden="true"></i>
+    Demo site – data resets from time to time. Try it with a demo account on the sign-in page.
+  </div>
+
+  <header class="site-header">
+    <a href="/" class="logo">
+      <span class="logo-icon"><i class="fa-solid fa-screwdriver-wrench" aria-hidden="true"></i></span>
+      <span class="logo-text">Campus <b>Hardware</b></span>
+    </a>
+    <nav class="header-actions">
+      <a href="login.html" class="btn btn-ghost">Sign in</a>
+      <a href="register.html" class="btn btn-solid">Join free</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <span class="kicker"><i class="fa-solid fa-building-columns" aria-hidden="true"></i> Student to student, on campus</span>
+        <h1>Rent the tools you need from students who own them.</h1>
+        <p>Need an oscilloscope for one lab, or a drill for a weekend project? Borrow it from someone on campus. If your own gear is sitting unused, rent it out and earn from it.</p>
+        <div class="hero-cta">
+          <a href="register.html" class="btn btn-solid btn-lg"><i class="fa-solid fa-user-plus" aria-hidden="true"></i> Create an account</a>
+          <a href="login.html" class="btn btn-outline btn-lg">I already have one</a>
+        </div>
+      </div>
+      <div class="hero-card" aria-hidden="true">
+        <div class="mock-head"><i class="fa-solid fa-wave-square"></i><div><strong>Handheld Oscilloscope</strong><small>Block C · Mechatronics Lab</small></div></div>
+        <div class="mock-price">RM 15.00 <span>/ day</span></div>
+        <ol class="mock-steps">
+          <li class="done"><span></span>Paid into escrow</li>
+          <li class="done"><span></span>Lender accepted</li>
+          <li class="now"><span></span>Meet &amp; enter PIN</li>
+          <li><span></span>Return &amp; refund</li>
+        </ol>
+        <div class="mock-pin"><span>4</span><span>8</span><span>1</span><span>7</span></div>
+        <small class="mock-note"><i class="fa-solid fa-lock"></i> Your PIN releases the rental fee only after you've checked the item.</small>
+      </div>
+    </section>
+
+    <section class="how" id="how">
+      <h2>How a rental works</h2>
+      <ol class="steps">
+        <li>
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <h3>Find &amp; book</h3>
+          <p>Search by category, price and condition. Pick your dates and suggest when and where to meet.</p>
+        </li>
+        <li>
+          <i class="fa-solid fa-vault" aria-hidden="true"></i>
+          <h3>Pay into escrow</h3>
+          <p>The system holds the rental fee and deposit. The lender doesn't get paid until you have the item.</p>
+        </li>
+        <li>
+          <i class="fa-solid fa-handshake" aria-hidden="true"></i>
+          <h3>Meet with a PIN</h3>
+          <p>Meet in person and check the item, then give the lender your 4-digit PIN.</p>
+        </li>
+        <li>
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+          <h3>Return &amp; get refunded</h3>
+          <p>Return it on time and your deposit comes back. If something breaks, an admin settles it fairly.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="features">
+      <div class="feature"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i><h3>Trust Points</h3><p>Everyone starts at 100. Returning on time and getting good reviews raises your score, and breaking the rules lowers it.</p></div>
+      <div class="feature"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i><h3>Fair disputes</h3><p>Damage claims use photos and statements from both sides, and an admin decides what comes out of the deposit.</p></div>
+      <div class="feature"><i class="fa-solid fa-star" aria-hidden="true"></i><h3>Honest reviews</h3><p>Rate the person and the item after every rental, so the next student knows what to expect.</p></div>
+    </section>
+
+    <section class="cta-band">
+      <h2>Have hardware sitting in a drawer?</h2>
+      <p>List it in a few minutes. You set the daily rate and the deposit.</p>
+      <a href="register.html" class="btn btn-white btn-lg">Start lending</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">&copy; 2026 Campus Hardware Lending System</footer>
+
+  <script>
+    fetch('/api/auth/config').then(r => r.json()).then(c => {
+      if (c.demo) document.getElementById('demoBar').hidden = false;
+    }).catch(() => {});
+  </script>
 </body>
 </html>
-

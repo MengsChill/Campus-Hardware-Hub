@@ -380,4 +380,4 @@ function seed() {
 }
 seed();
 
-module.exports = { db, BCRYPT_ROUNDS };
+module.exports = { db, BCRYPT_ROUNDS, DEMO_USERS };

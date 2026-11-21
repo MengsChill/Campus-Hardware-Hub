@@ -75,7 +75,7 @@ App.ready(async user => {
   /* Main card + side card */
   const actionItem = (loan, href, line) => `
     <a href="${href}" class="action-item">
-      <div class="thumb">${App.toolImage(loan.tool.image, { small: true })}</div>
+      <div class="thumb">${App.toolImage(loan.tool.image, { small: true, category: loan.tool.category })}</div>
       <div class="action-item-text"><strong>${esc(loan.tool.name)}</strong>${line}</div>
       ${App.statusBadge(loan.status, true)}
     </a>`;
@@ -88,7 +88,7 @@ App.ready(async user => {
         <thead><tr><th>Item</th><th>Borrower</th><th>Lender</th><th>Total</th><th>Status</th></tr></thead>
         <tbody>${data.recentLoans.map(l => `
           <tr>
-            <td><div class="tool-cell"><div class="thumb">${App.toolImage(l.tool.image, { small: true })}</div><span class="tool-name">${esc(l.tool.name)}</span></div></td>
+            <td><div class="tool-cell"><div class="thumb">${App.toolImage(l.tool.image, { small: true, category: l.tool.category })}</div><span class="tool-name">${esc(l.tool.name)}</span></div></td>
             <td>${esc(l.borrower.name)}</td><td>${esc(l.owner.name)}</td>
             <td>${App.money(l.cost.total)}</td><td>${App.statusBadge(l.status, true)}</td>
           </tr>`).join('')}</tbody>

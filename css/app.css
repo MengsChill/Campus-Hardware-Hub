@@ -902,3 +902,147 @@ textarea.form-control { resize: vertical; min-height: 92px; line-height: 1.5; }
 
 /* Keep wide children (tabs, tables, stage trackers) from widening the page on phones */
 .main-content, .page-body > *, .loan-card > div { min-width: 0; }
+
+/* =========================================================
+   Demo strip, paging and category placeholders
+   ========================================================= */
+.dash-card, .dash-grid > * { min-width: 0; }
+
+.demo-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 14px;
+  border-radius: var(--radius-sm);
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.demo-strip span { flex: 1; }
+.demo-strip button {
+  width: 32px; height: 32px;
+  border: 0; border-radius: 50%;
+  background: transparent; color: inherit; cursor: pointer;
+}
+.demo-strip button:hover { background: #FEF3C7; }
+
+.load-more { display: flex; justify-content: center; }
+.load-more .btn-secondary { width: auto; min-width: 180px; }
+
+.img-placeholder.cat-electrical { color: #D97706; background: #FFFBEB; }
+.img-placeholder.cat-mechanical { color: #475569; background: #F1F5F9; }
+.img-placeholder.cat-measuring  { color: #0D9488; background: #F0FDFA; }
+.img-placeholder.cat-computing  { color: #7C3AED; background: #F5F3FF; }
+.img-placeholder[class*="cat-"] span { color: inherit; opacity: 0.7; }
+
+/* =========================================================
+   Phones
+   ========================================================= */
+@media (max-width: 640px) {
+  /* iOS zooms into inputs smaller than 16px */
+  .form-control, .input-wrapper input, .chat-form input, select, textarea { font-size: 16px !important; }
+
+  /* Comfortable tap targets */
+  .btn-sm { min-height: 38px; }
+  .page-actions { width: 100%; }
+  .page-actions > * { flex: 1 1 auto; justify-content: center; }
+
+  /* Filter bar: search on its own row, then two filters per row */
+  .toolbar { gap: 8px; }
+  .toolbar-search { flex: 1 1 100%; }
+  .toolbar .form-control { flex: 1 1 calc(50% - 4px); min-width: 0; max-width: none !important; }
+  .toolbar .btn-sm { flex: 1 1 calc(50% - 4px); justify-content: center; }
+  .toolbar-count { flex: 1 1 100%; margin-left: 0; }
+
+  /* Stat cards: two per row, compact */
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card { grid-template-columns: minmax(0, 1fr); min-height: 0; padding: 14px; row-gap: 6px; }
+  .stat-icon { grid-column: 1; grid-row: 1; width: 34px; height: 34px; font-size: 14px; }
+  .stat-body { grid-column: 1; grid-row: 2; }
+  .stat-trend { grid-column: 1; grid-row: 3; }
+  .stat-value { font-size: 22px; }
+
+  /* Listing tiles: photo on the left, details on the right */
+  .tool-grid { grid-template-columns: 1fr; gap: 12px; }
+  .tool-tile { flex-direction: row; }
+  .tool-media { flex: 0 0 112px; aspect-ratio: auto; min-height: 140px; }
+  .tool-media .badge { top: auto; bottom: 8px; left: 8px; right: 8px; justify-content: center; font-size: 10px; padding: 3px 6px; white-space: normal; text-align: center; }
+  .tool-media .mine-tag { top: 8px; right: auto; left: 8px; }
+  .img-placeholder span { display: none; }
+  .tool-tile-body { padding: 12px 14px; gap: 4px; min-width: 0; }
+  .tool-tile-name { font-size: 14px; }
+  .tool-tile-footer { flex-wrap: wrap; padding-top: 8px; }
+
+  /* Booking stage tracker: all six steps fit without scrolling */
+  .stage-tracker { overflow: visible; }
+  .stage-tracker li, .stage-tracker.compact li { min-width: 0; font-size: 9.5px; line-height: 1.25; padding: 20px 1px 0; }
+  .stage-tracker .ended-label { min-width: 0; font-size: 10.5px; }
+
+  /* Tables become stacked cards; labels come from the header (see App.labelTables) */
+  .table-wrapper { overflow: visible; }
+  .data-table thead { display: none; }
+  .data-table, .data-table tbody, .data-table tr, .data-table td { display: block; width: 100%; }
+  .data-table tbody tr {
+    border: 1px solid var(--gray-200) !important;
+    border-radius: var(--radius-md);
+    padding: 4px 14px;
+    margin-bottom: 10px;
+    background: var(--white);
+  }
+  .data-table tbody tr.row-flagged { background: #FFF5F5; }
+  .data-table tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--gray-100);
+    text-align: right;
+    white-space: normal !important;
+  }
+  .data-table tbody td:last-child { border-bottom: 0; }
+  .data-table tbody td::before {
+    content: attr(data-label);
+    flex: none;
+    max-width: 45%;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--gray-400);
+  }
+  .data-table tbody td:first-child { justify-content: flex-start; text-align: left; padding-top: 12px; }
+  .data-table tbody td:first-child::before,
+  .data-table tbody td[colspan]::before,
+  .data-table tbody td:not([data-label])::before,
+  .data-table tbody td[data-label=""]::before { display: none; }
+  .data-table tbody td[colspan] { display: block; text-align: center; }
+  .data-table tbody tr:has(td[colspan]) { border: 0 !important; background: transparent; padding: 0; }
+  .data-table .btn-row { justify-content: flex-end; }
+  .data-table td:has(> .btn-row) { display: block; }
+  .data-table td:has(> .btn-row) .btn-row { justify-content: stretch; }
+  .data-table td:has(> .btn-row) .btn-sm { flex: 1 1 auto; justify-content: center; }
+
+  /* Dialogs slide up from the bottom like a native sheet */
+  .modal-overlay:has(.app-modal) { align-items: flex-end; padding: 0; }
+  .app-modal, .app-modal.lg {
+    max-width: 100%;
+    max-height: 92vh;
+    max-height: 92dvh;
+    border-radius: 20px 20px 0 0;
+    animation: sheetUp 0.25s ease-out both;
+  }
+  .app-modal-footer { flex-wrap: wrap; padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .app-modal-footer > * { flex: 1 1 auto; justify-content: center; }
+  @keyframes sheetUp { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+}
+
+/* Very narrow phones: drop the booking thumbnail so the details get the full width */
+@media (max-width: 480px) {
+  .loan-card { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 14px; }
+  .loan-card .thumb { display: none; }
+  .loan-actions > * { flex: 1 1 calc(50% - 4px); justify-content: center; }
+}

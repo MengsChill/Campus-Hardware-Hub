@@ -3,6 +3,10 @@
    ============================================================ */
 
 module.exports = {
+  // Public demo deployment: shows a "data resets" notice and one-click demo
+  // sign-in buttons. Set DEMO_MODE=true (render.yaml does this).
+  DEMO_MODE: process.env.DEMO_MODE === 'true',
+
   /* Module 1 – accounts */
   STUDENT_DOMAIN: '@student.tarc.edu.my',
   // Admin registration secret. Set ADMIN_SECRET_CODE in the environment for a

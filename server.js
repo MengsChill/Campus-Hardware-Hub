@@ -87,24 +87,32 @@ const guardPage = role => (req, res, next) => {
   next();
 };
 
-app.get(['/', '/index.html'], (req, res) => res.redirect(getSessionUser(req) ? '/dashboard.html' : '/login.html'));
+// Signed out → landing page; signed in → straight to the dashboard.
+app.get(['/', '/index.html'], redirectIfSignedIn, sendPage('index.html'));
 app.get('/login.html',    redirectIfSignedIn, sendPage('login.html'));
 app.get('/register.html', redirectIfSignedIn, sendPage('register.html'));
 SHARED_PAGES.forEach(p  => app.get(`/${p}.html`, guardPage(null),      sendPage(`${p}.html`)));
 STUDENT_PAGES.forEach(p => app.get(`/${p}.html`, guardPage('student'), sendPage(`${p}.html`)));
 ADMIN_PAGES.forEach(p   => app.get(`/${p}.html`, guardPage('admin'),   sendPage(`${p}.html`)));
-app.get('/favicon.ico', (req, res) => res.status(204).end());
+app.get(['/favicon.ico', '/favicon.svg'], (req, res) => res.type('image/svg+xml').sendFile(path.join(ROOT, 'favicon.svg')));
 app.use('/css', express.static(path.join(ROOT, 'css')));
 app.use('/js',  express.static(path.join(ROOT, 'js')));
 
 /* ── Background jobs ──────────────────────────────── */
-loans.runJobs();
-setInterval(() => {
-  db.prepare('DELETE FROM sessions WHERE expires_at <= ?').run(now());
-  db.prepare('DELETE FROM password_resets WHERE expires_at <= ?').run(now());
+function start() {
   loans.runJobs();
-}, 5 * 60 * 1000).unref();
+  setInterval(() => {
+    db.prepare('DELETE FROM sessions WHERE expires_at <= ?').run(now());
+    db.prepare('DELETE FROM password_resets WHERE expires_at <= ?').run(now());
+    loans.runJobs();
+  }, 5 * 60 * 1000).unref();
 
-app.listen(PORT, () => {
-  console.log(`Campus Hardware Lending System running at http://localhost:${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`Campus Hardware Lending System running at http://localhost:${PORT}`);
+  });
+}
+
+// `node server.js` starts the server; tests import the app without listening.
+if (require.main === module) start();
+
+module.exports = app;
