@@ -52,7 +52,7 @@ function loanCard(loan) {
   const showHandover = ['awaiting_payment', 'pending', 'confirmed'].includes(loan.status);
   return `
     <article class="loan-card ${loan.status === 'overdue' || loan.status === 'disputed' ? 'overdue' : myTurn && !isAdmin ? 'highlight' : ''}" data-loan-id="${loan.id}">
-      <div class="thumb">${App.toolImage(loan.tool.image, { small: true, alt: loan.tool.name })}</div>
+      <div class="thumb">${App.toolImage(loan.tool.image, { small: true, alt: loan.tool.name, category: loan.tool.category })}</div>
       <div>
         <div class="loan-card-head">
           <span class="loan-card-title">${esc(loan.tool.name)}</span>

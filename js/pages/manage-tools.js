@@ -18,7 +18,7 @@ App.ready(async () => {
   function row(tool) {
     return `
       <tr data-id="${tool.id}">
-        <td><div class="tool-cell"><div class="thumb">${App.toolImage(tool.image, { small: true })}</div>
+        <td><div class="tool-cell"><div class="thumb">${App.toolImage(tool.image, { small: true, category: tool.category })}</div>
           <div class="cell-stack"><span class="tool-name">${esc(tool.name)}</span><small>${esc(tool.categoryName)}</small></div></div></td>
         <td><div class="owner-chip" data-user-id="${tool.owner.id}" style="cursor:pointer;">${App.avatar(tool.owner, 'sm')}<span>${esc(tool.owner.name)}</span></div></td>
         <td>${App.availabilityBadge(tool)}${tool.removedReason ? `<div class="muted" style="margin-top:4px;white-space:normal;max-width:220px;">${esc(tool.removedReason)}</div>` : ''}</td>

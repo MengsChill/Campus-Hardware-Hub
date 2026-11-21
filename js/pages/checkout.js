@@ -25,7 +25,7 @@ App.ready(async () => {
       <section class="dash-card">
         <div class="card-header"><h3><i class="fa-solid fa-receipt"></i> Order summary</h3><span class="loan-ref">${esc(loan.ref)}</span></div>
         <div class="checkout-item">
-          <div class="thumb lg">${App.toolImage(loan.tool.image, { small: true })}</div>
+          <div class="thumb lg">${App.toolImage(loan.tool.image, { small: true, category: loan.tool.category })}</div>
           <div><strong>${esc(loan.tool.name)}</strong><span>from ${esc(loan.owner.name)}</span></div>
         </div>
         <dl class="info-list" style="margin:14px 0;">

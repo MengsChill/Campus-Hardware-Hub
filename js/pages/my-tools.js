@@ -14,7 +14,7 @@ App.ready(async () => {
     const onLoan = tool.availability === 'on_loan';
     return `
       <article class="loan-card ${tool.availability === 'available' ? 'highlight' : ''}" data-id="${tool.id}">
-        <div class="thumb">${App.toolImage(tool.image, { small: true, alt: tool.name })}</div>
+        <div class="thumb">${App.toolImage(tool.image, { small: true, alt: tool.name, category: tool.category })}</div>
         <div>
           <div class="loan-card-head">
             <span class="loan-card-title">${esc(tool.name)}</span>

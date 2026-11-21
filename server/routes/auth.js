@@ -6,7 +6,8 @@
 const crypto  = require('node:crypto');
 const express = require('express');
 const bcrypt  = require('bcryptjs');
-const { db, BCRYPT_ROUNDS } = require('../db');
+const { db, BCRYPT_ROUNDS, DEMO_USERS } = require('../db');
+const mailer  = require('../mailer');
 const PasswordRules = require('../../js/password-rules.js');
 const {
   config, IS_PROD, SESSION_COOKIE, sha256, now, normalizeEmail, handle, publicUser,
@@ -196,6 +197,20 @@ router.post('/logout', (req, res) => {
   res.json({ message: 'Signed out.' });
 });
 
+// Codes can only reach users by email; outside production they are shown on screen.
+const resetAvailable = () => mailer.enabled || !IS_PROD;
+
+/* ── Public settings for the sign-in page ─────────── */
+router.get('/config', (req, res) => {
+  res.json({
+    demo: config.DEMO_MODE,
+    passwordReset: resetAvailable(),
+    demoAccounts: config.DEMO_MODE
+      ? DEMO_USERS.map(u => ({ label: u.key === 'admin' ? 'Admin' : u.fullName.split(' ')[0], role: u.role, email: u.email, password: u.password }))
+      : [],
+  });
+});
+
 router.get('/me', (req, res) => {
   const user = getSessionUser(req);
   if (!user) return res.status(401).json({ error: 'Not signed in.' });
@@ -203,7 +218,10 @@ router.get('/me', (req, res) => {
 });
 
 /* ── Forgot / reset password ──────────────────────── */
-router.post('/forgot', (req, res) => {
+router.post('/forgot', handle(async (req, res) => {
+  if (!resetAvailable()) {
+    return res.status(503).json({ error: 'Password reset by email is not available. Please contact the system admin.' });
+  }
   const email = normalizeEmail(req.body?.email);
   if (!EMAIL_REGEX.test(email)) return res.status(400).json({ error: 'Enter a valid email address.' });
 
@@ -223,11 +241,26 @@ router.post('/forgot', (req, res) => {
       created_at = excluded.created_at, attempts = 0`)
     .run(email, sha256(email + ':' + code), now() + RESET_CODE_MINUTES * 60 * 1000, now());
 
-  // No email service is connected: the code goes to the server console, and
-  // outside production it is also returned so the demo can show it on screen.
+  if (mailer.enabled) {
+    try {
+      await mailer.sendMail({
+        to: email,
+        subject: 'Your password reset code',
+        text: `Your Campus Hardware Lending System reset code is ${code}.\n\n`
+            + `It expires in ${RESET_CODE_MINUTES} minutes. If you did not ask to reset your password, ignore this email.`,
+      });
+    } catch (err) {
+      console.error('[password reset] email failed:', err.message);
+      db.prepare('DELETE FROM password_resets WHERE email = ?').run(email);
+      return res.status(502).json({ error: 'The reset email could not be sent. Please try again later.' });
+    }
+    return res.json(generic);
+  }
+
+  // No email service (local development only): show the code on screen.
   console.log(`[password reset] code for ${email}: ${code} (valid ${RESET_CODE_MINUTES} min)`);
-  res.json(IS_PROD ? generic : { ...generic, devCode: code });
-});
+  res.json({ ...generic, devCode: code });
+}));
 
 router.post('/reset', handle(async (req, res) => {
   const email    = normalizeEmail(req.body?.email);

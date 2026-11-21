@@ -71,6 +71,7 @@ function serializeLoan(row, viewer) {
       id: row.tool_id,
       name: row.tool_name,
       image: imageUrl(row.tool_image),
+      category: row.tool_category,
       categoryName: CATEGORIES[row.tool_category] || 'Others',
       location: row.tool_location,
     },

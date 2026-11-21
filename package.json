@@ -4,7 +4,8 @@
   "description": "Campus Hardware & Tool Lending System",
   "scripts": {
     "dev": "node --watch --disable-warning=ExperimentalWarning server.js",
-    "start": "node --disable-warning=ExperimentalWarning server.js"
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "test": "node --test --disable-warning=ExperimentalWarning tests/*.test.js"
   },
   "devDependencies": {
     "vite": "^5.4.0"
@@ -12,7 +13,8 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
-    "express": "^4.22.3"
+    "express": "^4.22.3",
+    "nodemailer": "^6.9.16"
   },
   "main": "server.js",
   "engines": {

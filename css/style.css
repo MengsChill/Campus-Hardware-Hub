@@ -136,7 +136,7 @@ input, select, textarea { font-family: var(--font); }
   background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
-.brand { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
+.brand { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; color: inherit; text-decoration: none; }
 
 .brand-icon {
   width: 56px; height: 56px;
@@ -963,6 +963,43 @@ input, select, textarea { font-family: var(--font); }
   text-align: center;
 }
 .secure-note i { margin-top: 3px; color: var(--blue-primary); }
+.auth-footer-note a { color: inherit; }
+
+/* ── Auth: demo deployment ────────────────────────── */
+.demo-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #92400E;
+  white-space: normal;
+}
+.demo-notice i { margin-top: 2px; }
+.demo-accounts { margin-top: 20px; padding: 14px; border-radius: var(--radius-md); background: var(--gray-50); border: 1px dashed var(--gray-300); }
+.demo-accounts p { font-size: 12.5px; font-weight: 600; color: var(--gray-700); margin-bottom: 10px; white-space: normal; }
+.demo-accounts p i { color: var(--blue-primary); margin-right: 4px; }
+.demo-account-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.demo-account-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font-family: var(--font);
+  font-size: 13px; font-weight: 700; color: var(--gray-900);
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition);
+}
+.demo-account-btn small { font-size: 11px; font-weight: 500; color: var(--gray-500); }
+.demo-account-btn:hover, .demo-account-btn:focus-visible { border-color: var(--blue-primary); background: var(--blue-pale); outline: none; }
 
 /* ── Auth: Password Checklist Layouts ─────────────── */
 .pw-requirements.two-col {

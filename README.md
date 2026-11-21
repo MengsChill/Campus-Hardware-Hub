@@ -17,6 +17,26 @@ npm run dev        # http://localhost:3000
 The database (`data/campus.db`) and uploaded photos (`uploads/`) are created on first run.
 Delete both folders to start again with fresh demo data.
 
+```bash
+npm test           # API tests on a temporary database (escrow flow, auth, paging, demo mode)
+```
+
+### Settings (environment variables)
+
+| Variable | Purpose |
+|----------|---------|
+| `DEMO_MODE=true` | Public demo: shows a "data resets" notice and one-click demo sign-in buttons |
+| `ADMIN_SECRET_CODE` | Secret code required to register an admin account |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` | Email password-reset codes. Without `SMTP_HOST`, production hides "Forgot password?"; locally the code is shown on screen |
+| `DATA_DIR`, `UPLOAD_DIR` | Where the database and photos are stored |
+
+### Deploying on Render
+
+`render.yaml` uses the **free plan**, which has no persistent disk: the database and photos
+reset to the demo data whenever the service restarts or wakes from sleep. `DEMO_MODE` is on so
+users are told this. For permanent data, switch to a paid plan and mount a disk at `DATA_DIR`
+and `UPLOAD_DIR`.
+
 ### Demo accounts
 
 | Role    | Email                        | Password         | Notes |

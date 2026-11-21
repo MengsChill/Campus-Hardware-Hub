@@ -1,3 +1,6 @@
+# Free plan: the filesystem is not persistent, so the SQLite database and
+# uploaded photos are reset whenever the service restarts or wakes from sleep.
+# DEMO_MODE tells users this and offers one-click demo sign-in.
 services:
   - type: web
     name: campus-hardware-hub
@@ -11,7 +14,21 @@ services:
         value: 22.13.0
       - key: NODE_ENV
         value: production
+      - key: DEMO_MODE
+        value: "true"
       - key: ADMIN_SECRET_CODE
         generateValue: true
       - key: NODE_OPTIONS
         value: --disable-warning=ExperimentalWarning
+      # Optional: fill these in on the Render dashboard to email password
+      # reset codes. Without SMTP_HOST, "Forgot password?" is hidden.
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
