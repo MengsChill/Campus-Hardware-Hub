@@ -7,17 +7,10 @@
   <meta name="theme-color" content="#1565C0" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body class="auth-page">
 
-  <!-- Background Decoration -->
-  <div class="bg-shapes" aria-hidden="true">
-    <div class="shape shape-1"></div>
-    <div class="shape shape-2"></div>
-    <div class="shape shape-3"></div>
-  </div>
 
   <!-- Main Container -->
   <div class="auth-wrapper">
@@ -31,13 +24,13 @@
         <h1 class="brand-name">Campus<br><span>Hardware Lending System</span></h1>
       </a>
       <div class="left-tagline">
-        <h2>Borrow smarter,<br>build better.</h2>
-        <p>Rent hardware from fellow students, or earn by lending out your own. Every payment is held in escrow until the handover.</p>
+        <h2>Rent hardware from other students.</h2>
+        <p>Pay into escrow, meet on campus, and confirm the handover with a PIN. Lend your own gear out the same way.</p>
       </div>
       <ul class="feature-list">
-        <li class="feature-item"><i class="fa-solid fa-toolbox" aria-hidden="true"></i> Rent tools and boards from other students</li>
-        <li class="feature-item"><i class="fa-solid fa-vault" aria-hidden="true"></i> Payments held in escrow, handover verified by PIN</li>
-        <li class="feature-item"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i> Trust Points and reviews keep everyone honest</li>
+        <li class="feature-item">Rent tools and boards from other students</li>
+        <li class="feature-item">Payments held in escrow, handover verified by PIN</li>
+        <li class="feature-item">Trust Points and reviews keep everyone honest</li>
       </ul>
     </aside>
 
@@ -46,8 +39,8 @@
       <div class="auth-card">
 
         <div class="auth-header">
-          <h2>Welcome back</h2>
-          <p>Sign in with your campus email to continue</p>
+          <h2>Sign in</h2>
+          <p>Use your campus email.</p>
         </div>
 
         <div class="demo-notice" id="demoNotice" hidden>
@@ -113,20 +106,20 @@
 
           <!-- Submit -->
           <button type="submit" class="btn-primary btn-full" id="loginBtn">
-            <span class="btn-text">Sign In</span>
+            <span class="btn-text">Sign in</span>
             <i class="fa-solid fa-arrow-right btn-icon" aria-hidden="true"></i>
           </button>
 
           <div class="auth-divider"><span>New to the system?</span></div>
 
           <a href="register.html" class="btn-secondary btn-full">
-            <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Create an Account
+            Create an account
           </a>
 
         </form>
 
         <div class="demo-accounts" id="demoAccounts" hidden>
-          <p><i class="fa-solid fa-user-astronaut" aria-hidden="true"></i> Just looking? Sign in as a demo user:</p>
+          <p>Just looking? Sign in as a demo user:</p>
           <div class="demo-account-list" id="demoAccountList"></div>
         </div>
 

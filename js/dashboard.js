@@ -30,18 +30,16 @@ App.ready(async user => {
   const firstName = user.fullName.split(/\s+/)[0];
 
   /* Welcome banner */
-  document.getElementById('welcomeName').textContent = firstName;
+  if (isAdmin) document.querySelector('.welcome-text h1').textContent = 'Admin dashboard';
+  else document.getElementById('welcomeName').textContent = firstName;
   document.getElementById('dashboardDate').textContent = new Intl.DateTimeFormat('en-MY', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   }).format(new Date());
-  document.getElementById('welcomeMessage').textContent = isAdmin
-    ? 'Monitor listings, bookings, disputes and Trust Points across the campus.'
-    : 'Rent hardware from fellow students, or earn by lending out the ones you own.';
   document.getElementById('welcomeActions').innerHTML = isAdmin
-    ? `<a href="reports.html" class="btn-primary banner-btn"><i class="fa-solid fa-chart-column"></i> View Reports</a>
-       <a href="disputes.html" class="btn-primary banner-btn ghost"><i class="fa-solid fa-scale-balanced"></i> Disputes</a>`
-    : `<a href="catalog.html" class="btn-primary banner-btn"><i class="fa-solid fa-magnifying-glass"></i> Browse Hardware</a>
-       <a href="my-tools.html?new=1" class="btn-primary banner-btn ghost"><i class="fa-solid fa-plus"></i> List Hardware</a>`;
+    ? `<a href="disputes.html" class="btn-secondary">Disputes</a>
+       <a href="reports.html" class="btn-primary">Reports</a>`
+    : `<a href="my-tools.html?new=1" class="btn-secondary">List hardware</a>
+       <a href="catalog.html" class="btn-primary">Browse hardware</a>`;
 
   if (data.flagged) {
     document.getElementById('dashNotice').insertAdjacentHTML('beforeend',
@@ -54,22 +52,22 @@ App.ready(async user => {
 
   /* Stats */
   const s = data.stats;
-  const stat = (color, icon, value, label, detail, href) => `
-    <a href="${href}" class="stat-card ${color}">
-      <div class="stat-icon"><i class="fa-solid ${icon}"></i></div>
-      <div class="stat-body"><div class="stat-value">${value}</div><div class="stat-label">${label}</div></div>
+  const stat = (value, label, detail, href, alert = false) => `
+    <a href="${href}" class="stat-card ${alert ? 'alert' : ''}">
+      <div class="stat-value">${value}</div>
+      <div class="stat-label">${label}</div>
       <div class="stat-trend">${detail}</div>
     </a>`;
   document.getElementById('statsGrid').innerHTML = isAdmin ? [
-    stat('blue',   'fa-users',           s.students, 'Active students',  `${s.flagged} flagged for review`,            'manage-users.html?filter=flagged'),
-    stat('orange', 'fa-hand-holding',    s.active,   'Bookings in progress', `${s.overdue} overdue`,                    'bookings.html'),
-    stat('red',    'fa-scale-balanced',  s.disputes, 'Open disputes',    'Waiting for your decision',                  'disputes.html'),
-    stat('green',  'fa-lock',            App.money(s.escrow), 'Held in escrow', 'Payments not yet released or refunded', 'reports.html'),
+    stat(s.students, 'Active students', `${s.flagged} flagged for review`, 'manage-users.html?filter=flagged', s.flagged > 0),
+    stat(s.active, 'Bookings in progress', `${s.overdue} overdue`, 'bookings.html', s.overdue > 0),
+    stat(s.disputes, 'Open disputes', 'Waiting for your decision', 'disputes.html', s.disputes > 0),
+    stat(App.money(s.escrow), 'Held in escrow', 'Not yet released or refunded', 'reports.html'),
   ].join('') : [
-    stat(s.trustPoints < 50 ? 'red' : 'green', 'fa-shield-heart', s.trustPoints, 'Trust Points', s.trustPoints < 50 ? 'Below 50 – account flagged' : 'Keep returning on time', 'profile.html'),
-    stat('blue',   'fa-calendar-check',  `${s.borrowing}<small style="font-size:14px;color:var(--gray-400);"> / 3</small>`, 'Active bookings', s.overdue ? `${s.overdue} overdue!` : 'Hardware you are renting', 'my-loans.html'),
-    stat('orange', 'fa-inbox',           s.incoming, 'Needs your action', 'Requests, handovers & returns', 'requests.html'),
-    stat('green',  'fa-toolbox',         s.listings, 'My listings',      `${App.money(s.earnings)} earned so far`, 'my-tools.html'),
+    stat(s.trustPoints, 'Trust Points', s.trustPoints < 50 ? 'Below 50 – account flagged' : 'Keep returning on time', 'profile.html', s.trustPoints < 50),
+    stat(`${s.borrowing}<small> / 3</small>`, 'Active bookings', s.overdue ? `${s.overdue} overdue` : 'Hardware you are renting', 'my-loans.html', s.overdue > 0),
+    stat(s.incoming, 'Needs your action', 'Requests, handovers and returns', 'requests.html'),
+    stat(s.listings, 'My listings', `${App.money(s.earnings)} earned so far`, 'my-tools.html'),
   ].join('');
 
   /* Main card + side card */
@@ -81,7 +79,7 @@ App.ready(async user => {
     </a>`;
 
   if (isAdmin) {
-    document.getElementById('mainCardTitle').innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Recent bookings';
+    document.getElementById('mainCardTitle').innerHTML = 'Recent bookings';
     document.getElementById('mainCardLink').href = 'bookings.html';
     document.getElementById('mainCardBody').innerHTML = data.recentLoans.length ? `
       <div class="table-wrapper"><table class="data-table">
@@ -94,7 +92,7 @@ App.ready(async user => {
           </tr>`).join('')}</tbody>
       </table></div>` : App.emptyState('fa-box-open', 'No bookings yet.');
 
-    document.getElementById('sideCardTitle').innerHTML = '<i class="fa-solid fa-flag"></i> Flagged accounts';
+    document.getElementById('sideCardTitle').innerHTML = 'Flagged accounts';
     document.getElementById('sideCardBody').innerHTML = (data.flaggedUsers.length
       ? `<div class="action-list">${data.flaggedUsers.map(u => `<a href="manage-users.html?filter=flagged" class="action-item">${App.avatar(u)}
           <div class="action-item-text"><strong>${esc(u.name)}</strong>Needs review</div>${App.trustBadge(u.trustPoints)}</a>`).join('')}</div>`
@@ -104,16 +102,16 @@ App.ready(async user => {
         <a href="manage-tools.html" class="quick-action-btn green"><div class="qa-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div><span>Moderate Posts</span></a>
       </div>`;
   } else {
-    document.getElementById('mainCardTitle').innerHTML = '<i class="fa-solid fa-calendar-check"></i> My bookings';
+    document.getElementById('mainCardTitle').innerHTML = 'My bookings';
     document.getElementById('mainCardLink').href = 'my-loans.html';
     document.getElementById('mainCardBody').innerHTML = data.myLoans.length
       ? `<div class="action-list">${data.myLoans.map(l => actionItem(l, 'my-loans.html',
           `From ${esc(l.owner.name)} · ${App.fmtDate(l.startDate)} → ${App.fmtDate(l.endDate)} ${App.daysPill(l)}${l.pin ? ' · <strong>PIN ready</strong>' : ''}`)).join('')}</div>`
       : App.emptyState('fa-calendar-check', "You don't have any bookings in progress.", '<a href="catalog.html" class="btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Find Hardware</a>');
 
-    document.getElementById('sideCardTitle').innerHTML = '<i class="fa-solid fa-inbox"></i> Needs your action';
+    document.getElementById('sideCardTitle').innerHTML = 'Needs your action';
     const dueSoon = data.dueSoon.length ? `
-      <div class="card-header" style="margin-top:20px;padding-top:18px;border-top:1px solid var(--gray-100);"><h3><i class="fa-solid fa-calendar-xmark"></i> Due soon</h3></div>
+      <div class="card-header" style="margin-top:20px;padding-top:18px;border-top:1px solid var(--gray-100);"><h3>Due soon</h3></div>
       <div class="action-list">${data.dueSoon.map(l => actionItem(l, 'my-loans.html', `Return to ${esc(l.owner.name)} · ${App.daysPill(l)}`)).join('')}</div>` : '';
     document.getElementById('sideCardBody').innerHTML = (data.incoming.length
       ? `<div class="action-list">${data.incoming.map(l => actionItem(l, 'requests.html', `${esc(l.borrower.name)} · ${App.fmtDate(l.startDate)} → ${App.fmtDate(l.endDate)}`)).join('')}</div>`
@@ -123,8 +121,8 @@ App.ready(async user => {
   /* Latest tools */
   const tools = document.getElementById('latestTools');
   document.getElementById('latestToolsTitle').innerHTML = isAdmin
-    ? '<i class="fa-solid fa-toolbox"></i> Recently listed hardware'
-    : '<i class="fa-solid fa-toolbox"></i> Available to rent';
+    ? 'Recently listed hardware'
+    : 'Available to rent';
   tools.innerHTML = data.latestTools.length
     ? data.latestTools.map(toolTile).join('')
     : `<div style="grid-column:1/-1;">${App.emptyState('fa-box-open', 'No hardware available right now.',

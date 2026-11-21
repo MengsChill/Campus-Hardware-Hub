@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/dashboard.css" />
   <link rel="stylesheet" href="css/app.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body class="dashboard-page" data-page="dashboard" data-title="Dashboard">
@@ -18,15 +17,12 @@
   <div class="main-content" id="mainContent">
     <main class="page-body">
       <div id="dashBody" style="display:contents;">
-      <!-- Welcome Banner -->
       <div class="welcome-banner">
         <div class="welcome-text">
-          <div class="welcome-kicker"><i class="fa-solid fa-building-columns"></i> CAMPUS HARDWARE LENDING SYSTEM</div>
-          <h1>Welcome back, <span id="welcomeName">there</span></h1>
-          <p id="welcomeMessage"></p>
-          <div class="dashboard-meta"><i class="fa-regular fa-calendar"></i><span id="dashboardDate"></span></div>
+          <h1>Hi, <span id="welcomeName">there</span></h1>
+          <p id="dashboardDate"></p>
         </div>
-        <div class="welcome-actions" id="welcomeActions"></div>
+        <div class="welcome-actions btn-row" id="welcomeActions"></div>
       </div>
 
       <div id="dashNotice"></div>
@@ -62,13 +58,13 @@
       <section class="dash-grid bottom-grid">
         <div class="dash-card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-bell"></i> Notifications</h3>
+            <h3>Notifications</h3>
             <a href="notifications.html" class="card-link">View all <i class="fa-solid fa-arrow-right"></i></a>
           </div>
           <div class="notif-list" id="notifList"></div>
         </div>
         <div class="dash-card">
-          <div class="card-header"><h3><i class="fa-solid fa-timeline"></i> Recent Activity</h3></div>
+          <div class="card-header"><h3>Recent Activity</h3></div>
           <div class="activity-feed" id="activityFeed"></div>
         </div>
       </section>

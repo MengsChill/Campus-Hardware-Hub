@@ -144,7 +144,7 @@ const App = (() => {
   const statusLabel = status => (STATUS[status] || ['', status])[1];
   function statusBadge(status, short) {
     const [cls, label] = STATUS[status] || ['badge-gray', status];
-    return `<span class="badge ${cls}"><i class="fa-solid fa-circle" aria-hidden="true"></i> ${short && SHORT[status] ? SHORT[status] : label}</span>`;
+    return `<span class="badge ${cls}">${short && SHORT[status] ? SHORT[status] : label}</span>`;
   }
 
   function availabilityBadge(tool) {
@@ -219,13 +219,13 @@ const App = (() => {
   }
 
   /* ── Modals ─────────────────────────────────────── */
-  function modal({ title, icon = '', body = '', footer = '', size = '', onClose } = {}) {
+  function modal({ title, body = '', footer = '', size = '', onClose } = {}) {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay open';
     overlay.innerHTML = `
       <div class="modal-card app-modal ${size}" role="dialog" aria-modal="true" aria-label="${esc(title)}">
         <div class="app-modal-header">
-          <h3>${icon ? `<i class="fa-solid ${icon}" aria-hidden="true"></i>` : ''}${esc(title)}</h3>
+          <h3>${esc(title)}</h3>
           <button type="button" class="modal-close" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
         </div>
         <div class="app-modal-body">${body}</div>
@@ -269,12 +269,11 @@ const App = (() => {
   }
 
   /** Confirmation dialog. Resolves true / the typed text, or null if cancelled. */
-  function confirm({ title, message, confirmText = 'Confirm', danger = false, icon, input } = {}) {
+  function confirm({ title, message, confirmText = 'Confirm', danger = false, input } = {}) {
     return new Promise(resolve => {
       let done = false;
       const m = modal({
         title,
-        icon: icon || (danger ? 'fa-triangle-exclamation' : 'fa-circle-question'),
         body: `
           <p style="font-size:14px;color:var(--gray-700);margin-bottom:${input ? '14px' : '0'};">${esc(message)}</p>
           ${input ? `
@@ -670,7 +669,7 @@ const App = (() => {
               <ul class="ledger">${loan.transactions.map(t => `<li class="${t.type}">
                 <div><strong>${esc(TX_LABEL[t.type] || t.type)}</strong><small>${esc(t.reference)} · ${fmtDateTime(t.createdAt)}${t.note ? ' · ' + esc(t.note) : ''}</small></div>
                 <span>${t.type === 'payment' ? '+' : '−'}${money(t.amount)}</span></li>`).join('')}</ul>` : ''}
-            ${loan.returnPhoto ? `<h4 class="section-title"><i class="fa-solid fa-camera"></i> Condition photo at return</h4>
+            ${loan.returnPhoto ? `<h4 class="section-title">Condition photo at return</h4>
               <div class="photo-frame"><img src="${esc(loan.returnPhoto)}" alt="Condition photo uploaded by borrower" /></div>
               ${loan.returnNote ? `<div class="loan-message">${esc(loan.returnNote)}</div>` : ''}` : ''}
           </div>
