@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/dashboard.css" />
   <link rel="stylesheet" href="css/app.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body class="dashboard-page" data-page="profile" data-title="My Profile">
@@ -19,7 +18,7 @@
     <main class="page-body">
       <div class="page-header">
         <div>
-          <h1><i class="fa-solid fa-user" aria-hidden="true"></i> My Profile</h1>
+          <h1>My Profile</h1>
           <p>Your details, Trust Points, reviews and password.</p>
         </div>
         <div class="page-actions"></div>
@@ -38,7 +37,7 @@
 
         <div class="stack">
           <form class="dash-card" id="profileForm" novalidate>
-            <div class="card-header"><h3><i class="fa-solid fa-id-card"></i> Personal details</h3></div>
+            <div class="card-header"><h3>Personal details</h3></div>
             <div class="form-grid">
               <div class="form-group span-2">
                 <label for="pName">Full name</label>
@@ -75,7 +74,7 @@
           <section class="dash-card" id="trustPanel"></section>
 
           <form class="dash-card" id="passwordForm" novalidate>
-            <div class="card-header"><h3><i class="fa-solid fa-lock"></i> Change password</h3></div>
+            <div class="card-header"><h3>Change password</h3></div>
             <div class="form-group">
               <label for="currentPassword">Current password</label>
               <div class="input-wrapper">
@@ -114,7 +113,7 @@
           </form>
 
           <section class="dash-card danger-zone">
-            <div class="card-header"><h3><i class="fa-solid fa-user-slash"></i> Deactivate account</h3></div>
+            <div class="card-header"><h3>Deactivate account</h3></div>
             <p style="font-size:13px;color:var(--gray-500);margin-bottom:12px;">You can deactivate your account when you have no bookings in progress and no unresolved disputes. Your listings will be removed.</p>
             <button type="button" class="btn-secondary" id="deactivateBtn" style="color:#DC2626;"><i class="fa-solid fa-user-slash"></i> Deactivate my account</button>
           </section>

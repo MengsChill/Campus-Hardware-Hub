@@ -72,7 +72,7 @@ async function openToolDetail(toolId, { onChange } = {}) {
     const start = App.addDays(App.todayStr(), 1);
     panel = `
       <form id="bookForm" novalidate>
-        <h4><i class="fa-solid fa-calendar-plus" style="color:var(--blue-primary);"></i> Book this item</h4>
+        <h4>Book this item</h4>
         ${booked}
         <div class="form-grid">
           <div class="form-group">

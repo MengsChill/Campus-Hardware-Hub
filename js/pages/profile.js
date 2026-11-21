@@ -42,7 +42,7 @@ App.ready(async user => {
     const u = profile.user, r = profile.trustRules;
     const pct = Math.max(0, Math.min(100, u.trustPoints / 1.5));
     panel.innerHTML = `
-      <div class="card-header"><h3><i class="fa-solid fa-shield-heart"></i> Trust Points</h3></div>
+      <div class="card-header"><h3>Trust Points</h3></div>
       <div class="trust-meter">
         <div class="trust-score ${u.trustPoints < r.flagBelow ? 'bad' : u.trustPoints < 80 ? 'warn' : 'good'}">${u.trustPoints}</div>
         <div style="flex:1;">
